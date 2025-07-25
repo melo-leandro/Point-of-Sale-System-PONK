@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Este seeder não executa nenhuma ação por padrão
-        // Adicione seeders conforme necessário
+        $this->call([
+            TestUserSeeder::class,
+        ]);
     }
 }
