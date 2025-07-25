@@ -8,33 +8,246 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: white;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8e9ff 0%, #d0d5ff 50%, #c2c9ff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
         }
-        .logout-btn {
+
+        /* Padrão de fundo diagonal */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(255,255,255,0.1) 0px,
+                    rgba(255,255,255,0.1) 20px,
+                    transparent 20px,
+                    transparent 40px
+                );
+            z-index: 1;
+        }
+
+        /* Header com logo e botão sair */
+        .header {
             position: absolute;
             top: 20px;
+            left: 20px;
             right: 20px;
-            background: #dc3545;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        .logo::before {
+            content: '💧';
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .exit-btn {
+            background: #ff3333;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(255, 51, 51, 0.3);
+            transition: all 0.3s ease;
         }
-        .logout-btn:hover {
-            background: #c82333;
+
+        .exit-btn:hover {
+            background: #e62e2e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 51, 51, 0.4);
+        }
+
+        /* Container principal */
+        .main-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 80px;
+            z-index: 10;
+        }
+
+        /* Cards dos botões */
+        .menu-card {
+            background: #1e3a5f;
+            color: white;
+            width: 280px;
+            height: 280px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(30, 58, 95, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(30, 58, 95, 0.4);
+            background: #245073;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .menu-card-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .menu-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .menu-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .menu-key {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .menu-card {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        /* Efeitos de teclado */
+        .menu-card:active {
+            transform: translateY(-4px) scale(0.98);
         }
     </style>
 </head>
 <body>
-    <!-- Página em branco -->
-    
-    <!-- Botão de logout opcional (discreto) -->
-    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-        @csrf
-        <button type="submit" class="logout-btn">Sair</button>
-    </form>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">Ponk</div>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" class="exit-btn">SAIR - F12</button>
+        </form>
+    </div>
+
+    <!-- Menu Principal -->
+    <div class="main-container">
+        <!-- Ponto de Venda -->
+        <div class="menu-card" onclick="handleMenuClick('pos')">
+            <div class="menu-card-content">
+                <div class="menu-title">PONTO DE VENDA</div>
+                <div class="menu-icon">🛍️</div>
+            </div>
+            <div class="menu-key">F1</div>
+        </div>
+
+        <!-- Status do Caixa -->
+        <div class="menu-card" onclick="handleMenuClick('status')">
+            <div class="menu-card-content">
+                <div class="menu-title">STATUS DO CAIXA</div>
+                <div class="menu-icon">📈</div>
+            </div>
+            <div class="menu-key">F2</div>
+        </div>
+    </div>
+
+    <script>
+        // Função para lidar com cliques nos cards
+        function handleMenuClick(type) {
+            if (type === 'pos') {
+                console.log('Ponto de Venda selecionado');
+                // Aqui você pode adicionar navegação futura
+            } else if (type === 'status') {
+                console.log('Status do Caixa selecionado');
+                // Aqui você pode adicionar navegação futura
+            }
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'F1':
+                    event.preventDefault();
+                    handleMenuClick('pos');
+                    break;
+                case 'F2':
+                    event.preventDefault();
+                    handleMenuClick('status');
+                    break;
+                case 'F12':
+                    event.preventDefault();
+                    document.querySelector('form').submit();
+                    break;
+            }
+        });
+    </script>
 </body>
 </html>
