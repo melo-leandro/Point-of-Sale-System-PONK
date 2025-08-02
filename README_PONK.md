@@ -29,6 +29,7 @@ Sistema minimalista com apenas tela de login desenvolvido em Laravel.
 3. **Crie uma key e ajuste o env**
    Renomeie o .env.example para .env
    Remova o comentário da linhas do .env
+   Lembre-se de colocar a senha na linha "DB_PASSWORD=Ponk***********o"
    php artisan key:generate
 
 4. **Inicie o servidor:** (Sempre que precisar depois da primeira execução)
