@@ -1,12 +1,7 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
+import '../../../css/auth/login.css';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, errors: pageErrors }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -15,86 +10,118 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('login'), {
             onFinish: () => reset('password'),
         });
     };
 
     return (
-        <GuestLayout>
-            <Head title="Log in" />
+        <>
+            <Head title="Login - Point of Sale System" />
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
+            <div className="min-vh-100 d-flex justify-content-center align-items-center container">
+                <div
+                    className="login-card rounded border p-4 shadow"
+                    style={{ maxWidth: 400, width: '100%' }}
+                >
+                    <div className="mb-4 text-center">
+                        <h1>PONK</h1>
+                        <p>Point of Sale System</p>
+                    </div>
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
+                    {pageErrors && typeof pageErrors === 'string' && (
+                        <div className="alert alert-danger" role="alert">
+                            {pageErrors}
+                        </div>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    {status && (
+                        <div className="alert alert-success" role="alert">
+                            {status}
+                        </div>
+                    )}
+
+                    <form onSubmit={submit}>
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                id="email"
+                                name="email"
+                                value={data.email}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
+                                required
+                                autoFocus
+                            />
+                            {errors.email && (
+                                <div className="invalid-feedback">
+                                    {errors.email}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">
+                                Senha
+                            </label>
+                            <input
+                                type="password"
+                                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                                id="password"
+                                name="password"
+                                value={data.password}
+                                onChange={(e) =>
+                                    setData('password', e.target.value)
+                                }
+                                required
+                            />
+                            {errors.password && (
+                                <div className="invalid-feedback">
+                                    {errors.password}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="form-check mb-3">
+                            <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="remember"
+                                name="remember"
+                                checked={data.remember}
+                                onChange={(e) =>
+                                    setData('remember', e.target.checked)
+                                }
+                            />
+                            <label
+                                className="form-check-label"
+                                htmlFor="remember"
+                            >
+                                Lembrar-me
+                            </label>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100"
+                            disabled={processing}
+                        >
+                            Entrar
+                        </button>
+                    </form>
                 </div>
-            </form>
-        </GuestLayout>
+            </div>
+
+            {/* Bootstrap JS (opcional se estiver usando já via layout base) */}
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+                defer
+            ></script>
+        </>
     );
 }
