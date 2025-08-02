@@ -9,7 +9,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     position: relative;
-    overflow: hidden;
+
 }
 
 /* Padrão de fundo diagonal */
@@ -27,7 +27,7 @@ body::before {
         transparent 20px,
         transparent 40px
     );
-    z-index: 1;
+    
 }
 
 /* Header com logo e botão sair */
@@ -39,7 +39,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 10;
+    ;
 }
 
 .logo {
@@ -83,7 +83,7 @@ body::before {
     transform: translate(-50%, -50%);
     display: flex;
     gap: 80px;
-    z-index: 10;
+    ;
 }
 
 /* Cards dos botões */
@@ -101,7 +101,7 @@ body::before {
     transition: all 0.3s ease;
     box-shadow: 0 10px 30px rgba(30, 58, 95, 0.3);
     position: relative;
-    overflow: hidden;
+    
 }
 
 .menu-card:hover {
@@ -122,12 +122,12 @@ body::before {
         rgba(255, 255, 255, 0.1) 0%,
         transparent 50%
     );
-    z-index: 1;
+    
 }
 
 .menu-card-content {
     position: relative;
-    z-index: 2;
+    
     text-align: center;
 }
 
@@ -157,7 +157,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    
 }
 
 /* Responsividade */
