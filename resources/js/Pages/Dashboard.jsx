@@ -3,7 +3,39 @@ import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 export default function Dashboard() {
-    
+    const handleMenuClick = (type) => {
+        if (type === 'pos') {
+            console.log('Ponto de Venda selecionado');
+            // futura navegação aqui
+        } else if (type === 'status') {
+            console.log('Status do Caixa selecionado');
+            // futura navegação aqui
+        }
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            switch (event.key) {
+                case 'F1':
+                    event.preventDefault();
+                    handleMenuClick('pos');
+                    break;
+                case 'F2':
+                    event.preventDefault();
+                    handleMenuClick('status');
+                    break;
+                case 'F12':
+                    event.preventDefault();
+                    // eslint-disable-next-line no-case-declarations
+                    const form = document.querySelector('form');
+                    if (form) form.submit();
+                    break;
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
+    }, []);
 
     return (
         <AuthenticatedLayout
@@ -13,7 +45,6 @@ export default function Dashboard() {
                 </h2>
             }
         >
-            <Head title="Ponk" />
             <div className="main-container">
                 <div
                     className="menu-card"
