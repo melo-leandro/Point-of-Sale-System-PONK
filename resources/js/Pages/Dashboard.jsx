@@ -38,13 +38,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    PONK - Point of Sale System
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <div className="main-container">
                 <div
                     className="menu-card"
