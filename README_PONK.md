@@ -16,7 +16,8 @@ Sistema minimalista com apenas tela de login desenvolvido em Laravel.
 - PHP 8.2+
 - Composer
 
-### Passos para execução
+### Passos para execução 
+**_(não use bash se vc for alguem normal. so usa o terminal normal. Se você usa Windows você nao é normal. Abraços)_**
 
 1. **Clone o repositório** (se ainda não foi feito)
 2. **Instale as dependências:**
@@ -24,12 +25,17 @@ Sistema minimalista com apenas tela de login desenvolvido em Laravel.
    composer install
    ```
 
-3. **Inicie o servidor:**
+3. **Crie uma key e ajuste o env**
+   Renomeie o .env.example para .env
+   Remova o comentário da linhas do .env
+   php artisan key:generate
+
+4. **Inicie o servidor:** (Sempre que precisar depois da primeira execução)
    ```bash
    php artisan serve
    ```
 
-4. **Acesse o sistema:**
+5. **Acesse o sistema:**
    - URL: `http://localhost:8000`
    - A página inicial redirecionará automaticamente para o login
 
