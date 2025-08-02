@@ -22,6 +22,7 @@ Sistema minimalista com apenas tela de login desenvolvido em Laravel.
 1. **Clone o repositório** (se ainda não foi feito)
 2. **Instale as dependências:**
    ```bash
+   npm install
    composer install
    ```
 
