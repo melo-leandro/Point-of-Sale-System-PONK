@@ -22,8 +22,8 @@ return new class extends Migration
 
 
             $table->unique('pin')->whereNotNull('pin');
+            $table->char('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente')->nullable();
 
-            $table->char('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente e ascii para melhorar performance')->nullable();
             $table->rememberToken();
         });
 

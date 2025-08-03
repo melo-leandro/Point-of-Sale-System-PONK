@@ -11,12 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // DB::statement("CREATE TYPE forma_pagamento_tipo AS ENUM (
-        //     'dinheiro', 
-        //     'cartao_credito', 
-        //     'cartao_debito', 
-        //     'pix'
-        // )");
 
         Schema::create('vendas', function (Blueprint $table) {
             $table->id()->comment('Identificador único da venda');
@@ -31,11 +25,9 @@ return new class extends Migration
             $table->integer('caixa_id');
             $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict');
 
+            $table->enum('unidforma_pagamentoade', ['dinheiro', 'cartao_credito', 'cartao_debito', 'pix'])->default('dinheiro');
+
         });
-
-        DB::statement("ALTER TABLE vendas
-            ADD COLUMN forma_pagamento forma_pagamento_tipo");
-
 
         DB::statement("ALTER TABLE vendas 
             ADD CONSTRAINT cpf_cliente_valido_check 
