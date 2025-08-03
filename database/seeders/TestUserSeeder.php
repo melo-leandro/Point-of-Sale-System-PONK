@@ -12,9 +12,9 @@ class TestUserSeeder extends Seeder
     {
         // Criar apenas um usuário de teste
         User::create([
-            'name' => 'Usuário Teste',
+            'nome' => 'Usuário Teste',
             'email' => 'teste@teste.com',
-            'password' => Hash::make('123456'),
+            'senha' => Hash::make('123456'),
         ]);
     }
 }
