@@ -13,7 +13,7 @@ export default function Dashboard() {
     const handleMenuClick = (type) => {
         if (type === 'pos') {
             console.log('Ponto de Venda selecionado');
-            // futura navegação aqui
+            router.visit(route('pointOfSale'));
         } else if (type === 'status') {
             console.log('Status do Caixa selecionado');
             // futura navegação aqui
