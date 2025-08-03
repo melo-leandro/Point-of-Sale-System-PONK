@@ -9,27 +9,16 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'cpf',
-        'nome',
+        'name',
         'email',
         'password',
         'pin'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'cpf',
         'password',
@@ -37,11 +26,6 @@ class User extends Authenticatable
         'pin'
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -71,7 +55,5 @@ class User extends Authenticatable
                substr($this->cpf, 3, 3) . '.' . 
                substr($this->cpf, 6, 3) . '-' . 
                substr($this->cpf, 9, 2);
-    }
-    
-    
+    }        
 }

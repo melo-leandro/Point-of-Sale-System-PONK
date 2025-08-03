@@ -8,28 +8,12 @@ use Illuminate\Validation\ValidationException;
 
 class Produto extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
 
-    /**
-     * The primary key for the model.
-     *
-     * @var string
-     */
     protected $primaryKey = 'codigo';
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
     public $incrementing = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'codigo',
         'nome',
@@ -37,49 +21,48 @@ class Produto extends Model
         'valor_unitario'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'valor_unitario' => 'decimal:2',
         ];
     }
-    
-    
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     
     public function setCodigoAttribute($value)
     {
-        if (!is_numeric($value) && !preg_match('/^\d+$/', $value)) {
+        if (!preg_match('/^\d{13}$/', $value)) {
             throw ValidationException::withMessages([
-                'codigo' => 'O código deve conter apenas números.'
+                'valor_unitario' => 'O código deve ter exatamente 13 dígitos numéricos.'
+            ]);
+        }
+        $this->attributes['codigo'] = $value;
+    }
+
+    public function setValorUnitarioAttribute($value)
+    {
+        if (!is_numeric($value)) {
+            throw ValidationException::withMessages([
+                'valor_unitario' => 'O valor unitário deve ser um número.'
             ]);
         }
 
-        $cleaner = preg_replace('/[^0-9]/', '', $value); 
-
-        if(strlen($cleaner) !== 13){
+        if($value < 0) {
             throw ValidationException::withMessages([
-                'codigo' => ('O código do produto deve conter exatamente 13 dígitos numéricos.')
+                'valor_unitario' => 'O valor unitário não pode ser negativo.'
             ]);
         }
+        $this->attributes['valor_unitario'] = $value;
+    }
 
-        $this->attributes['codigo'] = $cleaner;
+    public function setUnidadeAttribute($value)
+    {
+        if (!in_array($value, ['UN', 'KG'])) {
+            throw ValidationException::withMessages([
+                'unidade' => 'A unidade deve ser "UN" ou "KG".'
+            ]);
+        }
+        $this->attributes['unidade'] = $value;
     }
 }
