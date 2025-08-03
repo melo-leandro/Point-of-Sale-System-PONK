@@ -24,21 +24,55 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'CPF' => $this->generateValidCPF(),
+            'nome' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'senha' => static::$password ??= Hash::make('senha123'), // Senha padrão alterada
+            'pin' => rand(0, 1) ? sprintf('%04d', rand(0, 9999)) : null, // 50% chance de ter PIN
             'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Generate a valid Brazilian CPF for testing.
      */
-    public function unverified(): static
+    protected function generateValidCPF(): string
+    {
+        $cpf = rand(100000000, 999999999); // Gera os 9 primeiros dígitos
+        $cpf = strval($cpf);
+        
+        // Calcula os dígitos verificadores
+        for ($t = 9; $t < 11; $t++) {
+            $d = 0;
+            for ($c = 0; $c < $t; $c++) {
+                $d += $cpf[$c] * (($t + 1) - $c);
+            }
+            $d = ((10 * $d) % 11) % 10;
+            $cpf .= $d;
+        }
+        
+        return $cpf;
+    }
+
+    /**
+     * Indicate that the user should have a PIN.
+     */
+    public function withPin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'pin' => sprintf('%04d', rand(0, 9999))
+        ]);
+    }
+
+    /**
+     * Indicate that the user should not have a PIN.
+     */
+    public function withoutPin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'pin' => null,
         ]);
     }
 }

@@ -12,16 +12,16 @@ class UserSeeder extends Seeder
     {
         // Criar usuário admin padrão
         User::create([
-            'name' => 'Administrador',
+            'nome' => 'Administrador',
             'email' => 'admin@ponk.com',
-            'password' => Hash::make('123456'),
+            'senha' => Hash::make('123456'),
         ]);
 
         // Criar usuário de teste
         User::create([
-            'name' => 'Usuario Teste',
+            'nome' => 'Usuario Teste',
             'email' => 'usuario@ponk.com',
-            'password' => Hash::make('123456'),
+            'senha' => Hash::make('123456'),
         ]);
     }
 }
