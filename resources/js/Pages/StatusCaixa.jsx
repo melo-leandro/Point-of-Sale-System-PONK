@@ -1,3 +1,4 @@
+import "../../css/statusCaixa.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
@@ -32,343 +33,60 @@ export default function StatusCaixa() {
 
     return (
         <AuthenticatedLayout>
-            {/* Essa div junta td */}
-            <div className="m-0 flex min-h-screen items-center justify-center bg-gray-100 p-0" style={{zIndex:1, position:'relative'}}>
-                <div className="h-[80vh] w-full max-w-[1200px] px-6">
-                    <div id="item-panel" className="flex gap-4">
-                        <div className="2/5 flex w-1/3 flex-col gap-4">
-                            <div className="flex h-32 flex-col items-center justify-center bg-green-200">
-                                <div className="text-1xl flex items-start justify-center font-semibold">
-                                    STATUS DO CAIXA
-                                </div>
-                                <div className="flex justify-center">
-                                    <h2 className="text-5xl font-semibold">
-                                        ABERTO
-                                    </h2>
-                                </div>
-                                <div className="text-1xl flex items-start justify-center font-semibold">
-                                    abertura e data eu acho texto grande
-                                </div>
+            <div className="wrapper">
+                <div className="container">
+                    <div id="item-panel" className="item-panel">
+                        <div className="sidebar">
+                            <div className="status-box">
+                                <div className="title">STATUS DO CAIXA</div>
+                                <h2 className="status-value">ABERTO</h2>
+                                <div className="subtitle">abertura e data eu acho texto grande</div>
                             </div>
 
-                            <div className="flex h-28 flex-col justify-between bg-red-200 p-4">
-                                <div className="text-1xl flex items-start justify-center font-semibold">
-                                    TERMINAL
-                                </div>
-                                <div className="flex justify-center">
-                                    <h2 className="text-5xl font-semibold">
-                                        CAIXA 1
-                                    </h2>
-                                </div>
+                            <div className="terminal-box">
+                                <div className="title">TERMINAL</div>
+                                <h2 className="terminal-value">CAIXA 1</h2>
                             </div>
 
-                            <div className="flex h-60 flex-col justify-center bg-red-200 p-2">
-                                <div className="flex h-full items-center">
-                                    <ul className="space-y-0.5">
-                                        <li className="text-lg font-semibold">
-                                            F1 - Voltar ao Menu
-                                        </li>
-                                        <li className="text-lg font-semibold">
-                                            F2 - Abrir caixa
-                                        </li>
-                                        <li className="text-lg font-semibold">
-                                            F3 - Gerar relatório PDF
-                                        </li>
-                                        <li className="text-lg font-semibold">
-                                            F4 - Mudar Terminal
-                                        </li>
-                                        <li className="text-lg font-semibold">
-                                            F5 - Atualizar
-                                        </li>
-                                        <li className="text-lg font-semibold">
-                                            F6 - Fechar caixa
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div className="actions-box">
+                                <ul>
+                                    <li>F1 – Voltar ao Menu</li>
+                                    <li>F2 – Abrir caixa</li>
+                                    <li>F3 – Gerar relatório PDF</li>
+                                    <li>F4 – Mudar Terminal</li>
+                                    <li>F5 – Atualizar</li>
+                                    <li>F6 – Fechar caixa</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <div className="flex w-2/3 flex-col gap-4 bg-green-200">
-                            {/* Lista de itens */}
-
-                            <h2 className="items-start justify-center border-b-[3px] border-gray-300 p-[20px] text-2xl font-semibold">
-                                MOVIMENTAÇÃO DO CAIXA
-                            </h2>
-                            <div className="max-h-[61vh] w-full overflow-y-scroll">
-                                <table className="w-full table-auto border-collapse border border-gray-400 text-center">
+                        <div className="main-panel">
+                            <h2 className="mov-title">MOVIMENTAÇÃO DO CAIXA</h2>
+                            <div className="table-wrapper">
+                                <table>
                                     <thead>
                                         <tr>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Data e Hora
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Dinheiro
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Crédito
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Débito
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Pix
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                Total
-                                            </th>
-                                            <th className="border border-gray-400 p-2 font-bold">
-                                                N° Venda
-                                            </th>
+                                            <th>Data e Hora</th>
+                                            <th>Dinheiro</th>
+                                            <th>Crédito</th>
+                                            <th>Débito</th>
+                                            <th>Pix</th>
+                                            <th>Total</th>
+                                            <th>N° Venda</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-gray-400 p-2">
-                                                hora
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                por ai
-                                            </td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2"></td>
-                                            <td className="border border-gray-400 p-2">
-                                                um resto
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                muito
-                                            </td>
-                                            <td className="border border-gray-400 p-2">
-                                                1
-                                            </td>
-                                        </tr>
+                                        {Array.from({ length: 24 }).map((_, idx) => (
+                                            <tr key={idx}>
+                                                <td>13:00</td>
+                                                <td>R$ 10,00</td>
+                                                <td>Não</td>
+                                                <td>Não</td>
+                                                <td>Não</td>
+                                                <td>R$ 10,00</td>
+                                                <td>{idx + 1}</td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
