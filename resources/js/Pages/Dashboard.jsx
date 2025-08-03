@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { router , usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function Dashboard() {
     const { forceReload } = usePage().props;
@@ -30,17 +30,6 @@ export default function Dashboard() {
                 case 'F2':
                     event.preventDefault();
                     handleMenuClick('status');
-                    break;
-                case 'F12':
-                    event.preventDefault();
-                    console.log('Deveria desloga');
-                    router.post(
-                        route('logout'),
-                        {},
-                        {
-                            onFinish: () => window.location.reload(),
-                        },
-                    );
                     break;
             }
         };
