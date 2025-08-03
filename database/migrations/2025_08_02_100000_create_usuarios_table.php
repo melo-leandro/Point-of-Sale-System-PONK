@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usuarios', function (Blueprint $table) {
-            $table->string('CPF', 11)->comment('CPF sem formatação')->primary();
+            $table->string('cpf', 11)->comment('CPF sem formatação')->primary();
             $table->timestamps();
             $table->string('nome');
             $table->string('email')->unique();
@@ -25,25 +25,25 @@ return new class extends Migration
             $table->rememberToken();
         });
 
-        DB::statement("ALTER TABLE sua_tabela 
+        DB::statement("ALTER TABLE usuarios 
             ADD CONSTRAINT pin_valido_check 
             CHECK (pin IS NULL OR (pin ~ '^[0-9]{4}$' AND LENGTH(pin) = 4));"
         );
 
-        Schema::create('senha_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->timestamps();
-            $table->string('token');
-        });
+        // Schema::create('senha_reset_tokens', function (Blueprint $table) {
+        //     $table->string('email')->primary();
+        //     $table->timestamps();
+        //     $table->string('token');
+        // });
 
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
+        // Schema::create('sessions', function (Blueprint $table) {
+        //     $table->string('id')->primary();
+        //     $table->foreignId('user_id')->nullable()->index();
+        //     $table->string('ip_address', 45)->nullable();
+        //     $table->text('user_agent')->nullable();
+        //     $table->longText('payload');
+        //     $table->integer('last_activity')->index();
+        // });
     }
 
     /**
@@ -52,7 +52,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('usuarios');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        // Schema::dropIfExists('password_reset_tokens');
+        // Schema::dropIfExists('sessions');
     }
 };

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('nome');
             $table->string('unidade');
-            $table->unsignedDecimal('valor_unitario', 10, 2)->default(0);
+            $table->decimal('valor_unitario', 10, 2)->default(0);
         });
     }
 

@@ -22,16 +22,21 @@ return new class extends Migration
             $table->id()->comment('Identificador único da venda');
             $table->timestamps();
 
-            $table->unsignedDecimal('valor_total', 10, 2)->default(0);
-            $table->addColumn('forma_pagamento_tipo', 'forma_pagamento')->comment('Forma de pagamento utilizada');
+            $table->decimal('valor_total', 10, 2)->default(0);
 
             $table->char('cpf_cliente', 11)->nullable()->comment('CPF sem formatação');
-            $table->char('CPF_operador', 11)->comment('CPF sem formatação');
+            $table->char('cpf_operador', 11)->comment('CPF sem formatação');
 
             $table->foreign('cpf_operador')->references('cpf')->on('usuarios')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreignId('caixa_id')->constrained('caixas')->onUpdate('cascade')->onDelete('restrict');
+
+            $table->integer('caixa_id');
+            $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict');
 
         });
+
+        DB::statement("ALTER TABLE vendas
+            ADD COLUMN forma_pagamento forma_pagamento_tipo");
+
 
         DB::statement("ALTER TABLE vendas 
             ADD CONSTRAINT cpf_cliente_valido_check 

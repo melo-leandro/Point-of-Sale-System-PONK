@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('numeracao');
             $table->timestamps();
             $table->boolean('aberto')->default(false);
-            $table->unsignedDecimal('saldo_inicial', 10, 2)->default(0);
+            $table->decimal('saldo_inicial', 10, 2)->default(0);
         });
     }
 
