@@ -22,6 +22,10 @@ Route::get('/pointOfSale', function () {
     return Inertia::render('PointOfSale');
 })->middleware(['auth', 'verified'])->name('pointOfSale');
 
+Route::get('/statuscaixa', function () {
+    return Inertia::render('StatusCaixa');
+})->middleware(['auth', 'verified'])->name('StatusCaixa');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
