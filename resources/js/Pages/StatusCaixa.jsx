@@ -1,16 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function StatusCauxa() {
-
     const handleMenuClick = (type) => {
-        if (type === 'pos') {
-            console.log('Ponto de Venda selecionado');
-            router.visit(route('pointOfSale'));
-        } else if (type === 'status') {
-            console.log('Status do Caixa selecionado');
-            // futura navegação aqui
+        if (type === 'inicio') {
+            router.visit(route('dashboard'));
         }
+        // else if (type === 'status') {
+        //     console.log('Status do Caixa selecionado');
+        //     // futura navegação aqui
+        // }
     };
 
     useEffect(() => {
@@ -18,11 +17,11 @@ export default function StatusCauxa() {
             switch (event.key) {
                 case 'F1':
                     event.preventDefault();
-                    handleMenuClick('pos');
+                    handleMenuClick('inicio');
                     break;
-                case 'F2':
+                case 'F5':
                     event.preventDefault();
-                    handleMenuClick('status');
+                    window.location.reload();
                     break;
             }
         };
