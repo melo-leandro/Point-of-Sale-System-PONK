@@ -1,8 +1,32 @@
 import "../../css/PointOfSale.css";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { useEffect } from "react";
 
 export default function PointOfSale() {
-return (
+    useEffect(() => {
+            const handleKeyDown = (event) => {
+                switch (event.key) {
+                    case 'F1':
+                        event.preventDefault();
+                        // Implementar lógica para excluir item
+                        break;
+                    case 'F2':
+                        event.preventDefault();
+                        // Implementar lógica para inserir quantidade/peso
+                        break;
+                    case 'F3':
+                        event.preventDefault();
+                        // Implementar lógica para ir para o pagamento
+                        break;
+                }
+            };
+    
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
+        }, []);
+
+
+    return (
     <AuthenticatedLayout>
         <div className="point-of-sale-container">
             <div className="point-of-sale-header">
@@ -38,7 +62,6 @@ return (
                             <li>F1 - Excluir item</li>
                             <li>F2 - Inserir quantidade/peso</li>
                             <li>F3 - Ir para o pagamento</li>
-                            <li>F12 - Voltar ao menu inicial</li>
                         </ul>
                     </div>
                 </div>
@@ -58,14 +81,14 @@ return (
                                 </tr>
                             </thead>
                             <tbody>
-                                {Array.from({ length: 24}).map((_, i) => (
-                                    <tr key={i}>
-                                        <td>{`cell1_${i + 1}`}</td>
-                                        <td>{`cell2_${i + 1}`}</td>
-                                        <td>{`cell3_${i + 1}`}</td>
-                                        <td>{`cell4_${i + 1}`}</td>
-                                        <td>{`cell5_${i + 1}`}</td>
-                                        <td>{`cell6_${i + 1}`}</td>
+                                {Array.from({ length: 24 }).map((_, idx) => (
+                                    <tr key={idx}>
+                                        <td>{idx + 1}</td>
+                                        <td>000{idx + 1}</td>
+                                        <td>Produto Exemplo {idx + 1}</td>
+                                        <td>1</td>
+                                        <td>R$ 10,00</td>
+                                        <td>R$ 10,00</td>
                                     </tr>
                                 ))}
                             </tbody>
