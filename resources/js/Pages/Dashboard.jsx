@@ -16,7 +16,7 @@ export default function Dashboard() {
             router.visit(route('pointOfSale'));
         } else if (type === 'status') {
             console.log('Status do Caixa selecionado');
-            // futura navegação aqui
+            router.visit(route('StatusCaixa'));
         }
     };
 
