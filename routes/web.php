@@ -2,15 +2,16 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     if (Auth::check()){
-        return redirect('/dashboard');
+        return Redirect::route('dashboard');
     }
 
-    return redirect('/login');
+    return Redirect::route('login');
 });
 
 Route::get('/dashboard', function () {

@@ -1,7 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { router } from '@inertiajs/react';
+import { router , usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function Dashboard() {
+    const { forceReload } = usePage().props;
+
+    useEffect(() => {
+        if (forceReload) {
+            window.location.href = route('dashboard');
+        }
+    }, [forceReload]);
+
     const handleMenuClick = (type) => {
         if (type === 'pos') {
             console.log('Ponto de Venda selecionado');
