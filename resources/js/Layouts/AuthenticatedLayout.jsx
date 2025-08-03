@@ -27,12 +27,13 @@ export default function AuthenticatedLayout({ children }) {
                                 <h1 className="text-xl font-semibold leading-tight text-gray-800">
                                     Ponk
                                 </h1>
-                                <NavLink
+                                <ResponsiveNavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
+    style={{ zIndex: 1, position: 'relative' }}
                                 >
                                     Inicio
-                                </NavLink>
+                                </ResponsiveNavLink>
                             </div>
                         </div>
 
