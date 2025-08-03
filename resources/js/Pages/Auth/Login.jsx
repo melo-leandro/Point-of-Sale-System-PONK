@@ -1,3 +1,4 @@
+import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Head, useForm } from '@inertiajs/react';
 import '../../../css/auth/login.css';
 
@@ -25,6 +26,7 @@ export default function Login({ status, errors: pageErrors }) {
                     style={{ maxWidth: 400, width: '100%' }}
                 >
                     <div className="mb-4 text-center">
+                        <ApplicationLogo className="iconPequeno"></ApplicationLogo>
                         <h1>PONK</h1>
                         <p>Point of Sale System</p>
                     </div>
@@ -108,7 +110,7 @@ export default function Login({ status, errors: pageErrors }) {
 
                         <button
                             type="submit"
-                            className="btn btn-primary w-100"
+                            className="btn btn-primary mt-2 px-5"
                             disabled={processing}
                         >
                             Entrar

@@ -1,11 +1,19 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { router, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
-
 export default function Dashboard() {
+    const { forceReload } = usePage().props;
+
+    useEffect(() => {
+        if (forceReload) {
+            window.location.href = route('dashboard');
+        }
+    }, [forceReload]);
+
     const handleMenuClick = (type) => {
         if (type === 'pos') {
             console.log('Ponto de Venda selecionado');
-            // futura navegação aqui
+            router.visit(route('pointOfSale'));
         } else if (type === 'status') {
             console.log('Status do Caixa selecionado');
             // futura navegação aqui
@@ -22,12 +30,6 @@ export default function Dashboard() {
                 case 'F2':
                     event.preventDefault();
                     handleMenuClick('status');
-                    break;
-                case 'F12':
-                    event.preventDefault();
-                    // eslint-disable-next-line no-case-declarations
-                    const form = document.querySelector('form');
-                    if (form) form.submit();
                     break;
             }
         };

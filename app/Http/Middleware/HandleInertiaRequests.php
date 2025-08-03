@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'forceReload' => session('forceReload'), // forceReload no props p resolver problema de CSS dashboard
         ];
     }
 }
