@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
-
 export default function Dashboard() {
     const handleMenuClick = (type) => {
         if (type === 'pos') {
@@ -25,9 +25,14 @@ export default function Dashboard() {
                     break;
                 case 'F12':
                     event.preventDefault();
-                    // eslint-disable-next-line no-case-declarations
-                    const form = document.querySelector('form');
-                    if (form) form.submit();
+                    console.log('Deveria desloga');
+                    router.post(
+                        route('logout'),
+                        {},
+                        {
+                            onFinish: () => window.location.reload(),
+                        },
+                    );
                     break;
             }
         };
