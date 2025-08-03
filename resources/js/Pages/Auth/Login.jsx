@@ -18,7 +18,6 @@ export default function Login({ status, errors: pageErrors }) {
 
     return (
         <>
-            <Head title="Login - Point of Sale System" />
 
             <div className="min-vh-100 d-flex justify-content-center align-items-center container">
                 <div

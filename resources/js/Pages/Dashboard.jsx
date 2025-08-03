@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
 import { router, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function Dashboard() {
@@ -37,6 +38,8 @@ export default function Dashboard() {
     }, []);
 
     return (
+        <>
+        <Head title="Dashboard" />
         <AuthenticatedLayout>
             <div className="main-container">
                 <div
@@ -62,5 +65,6 @@ export default function Dashboard() {
                 </div>
             </div>
         </AuthenticatedLayout>
+        </>
     );
 }

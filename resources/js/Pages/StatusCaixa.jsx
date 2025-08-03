@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function StatusCaixa() {
@@ -31,6 +32,8 @@ export default function StatusCaixa() {
     }, []);
 
     return (
+        <>
+        <Head title="Status do Caixa" />
         <AuthenticatedLayout>
             {/* Essa div junta td */}
             <div className="m-0 flex min-h-screen items-center justify-center bg-gray-100 p-0" style={{zIndex:1, position:'relative'}}>
@@ -377,5 +380,6 @@ export default function StatusCaixa() {
                 </div>
             </div>
         </AuthenticatedLayout>
+        </>
     );
 }
