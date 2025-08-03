@@ -25,9 +25,8 @@ return new class extends Migration
             $table->decimal('valor_total', 10, 2)->default(0);
 
             $table->char('cpf_cliente', 11)->nullable()->comment('CPF sem formatação');
-            $table->char('cpf_operador', 11)->comment('CPF sem formatação');
 
-            $table->foreign('cpf_operador')->references('cpf')->on('usuarios')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('usuario_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
 
             $table->integer('caixa_id');
             $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict');
@@ -43,10 +42,6 @@ return new class extends Migration
             CHECK (cpf_cliente IS NULL OR cpf_cliente ~ '^[0-9]{11}$')
         ");
         
-        DB::statement("ALTER TABLE vendas 
-            ADD CONSTRAINT cpf_operador_valido_check 
-            CHECK (cpf_operador ~ '^[0-9]{11}$')
-        ");
     }
     /**
      * Reverse the migrations.

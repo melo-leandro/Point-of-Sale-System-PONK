@@ -18,9 +18,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'cpf',
+        'nome',
         'email',
         'password',
+        'pin'
     ];
 
     /**
@@ -29,8 +31,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'cpf',
         'password',
         'remember_token',
+        'pin'
     ];
 
     /**
@@ -41,8 +45,33 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'pin' => 'encrypted',
         ];
     }
+    
+    public function setCpfAttribute($value)
+    {
+        $cleaned = preg_replace('/[^0-9]/', '', $value);
+        
+        if (strlen($cleaned) !== 11) {
+            throw ValidationException::withMessages([
+                'cpf' => __('CPF deve conter exatamente 11 dígitos')
+            ]);
+        }
+        
+        $this->attributes['cpf'] = $cleaned;
+    }
+
+    public function getCpfFormatadoAttribute()
+    {
+        if (empty($this->cpf)) return null;
+        
+        return substr($this->cpf, 0, 3) . '.' . 
+               substr($this->cpf, 3, 3) . '.' . 
+               substr($this->cpf, 6, 3) . '-' . 
+               substr($this->cpf, 9, 2);
+    }
+    
+    
 }

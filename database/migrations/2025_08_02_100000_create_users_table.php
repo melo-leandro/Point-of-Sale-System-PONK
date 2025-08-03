@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usuarios', function (Blueprint $table) {
-<<<<<<< HEAD
-            $table->char('cpf', 11)->comment('CPF sem formatação')->primary();
-=======
-            $table->string('cpf', 11)->comment('CPF sem formatação')->primary();
->>>>>>> 8941c51 (conserta migrations)
+        Schema::create('users', function (Blueprint $table) {
+
+            $table->id()->comment('Identificador único do usuário')->primary();
+            $table->char('cpf', 11)->comment('CPF sem formatação')->nullable();
             $table->timestamps();
-            $table->string('nome');
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
 
@@ -29,24 +27,17 @@ return new class extends Migration
             $table->rememberToken();
         });
 
-        DB::statement("ALTER TABLE usuarios 
+        DB::statement("ALTER TABLE users
+             
             ADD CONSTRAINT pin_valido_check 
             CHECK (pin IS NULL OR (pin ~ '^[0-9]{4}$' AND LENGTH(pin) = 4));"
         );
 
-<<<<<<< HEAD
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->timestamps();
             $table->string('token');
         });
-=======
-        // Schema::create('senha_reset_tokens', function (Blueprint $table) {
-        //     $table->string('email')->primary();
-        //     $table->timestamps();
-        //     $table->string('token');
-        // });
->>>>>>> 8941c51 (conserta migrations)
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -63,7 +54,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
