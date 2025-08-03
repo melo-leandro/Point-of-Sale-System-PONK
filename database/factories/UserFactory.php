@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'CPF' => $this->generateValidCPF(),
             'nome' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'senha' => static::$password ??= Hash::make('senha123'), // Senha padrão alterada
+            'password' => static::$password ??= Hash::make('password123'), // Senha padrão alterada
             'pin' => rand(0, 1) ? sprintf('%04d', rand(0, 9999)) : null, // 50% chance de ter PIN
             'remember_token' => Str::random(10),
             'created_at' => now(),
