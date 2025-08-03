@@ -1,3 +1,4 @@
+import "../../css/statusCaixa.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
