@@ -14,14 +14,14 @@ class UserSeeder extends Seeder
         User::create([
             'nome' => 'Administrador',
             'email' => 'admin@ponk.com',
-            'senha' => Hash::make('123456'),
+            'password' => Hash::make('123456'),
         ]);
 
         // Criar usuário de teste
         User::create([
             'nome' => 'Usuario Teste',
             'email' => 'usuario@ponk.com',
-            'senha' => Hash::make('123456'),
+            'password' => Hash::make('123456'),
         ]);
     }
 }
