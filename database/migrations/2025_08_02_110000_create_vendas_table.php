@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE TYPE forma_pagamento_tipo AS ENUM (
-            'dinheiro', 
-            'cartao_credito', 
-            'cartao_debito', 
-            'pix'
-        )");
+        // DB::statement("CREATE TYPE forma_pagamento_tipo AS ENUM (
+        //     'dinheiro', 
+        //     'cartao_credito', 
+        //     'cartao_debito', 
+        //     'pix'
+        // )");
 
         Schema::create('vendas', function (Blueprint $table) {
             $table->id()->comment('Identificador único da venda');

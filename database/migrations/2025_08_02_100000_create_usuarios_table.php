@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usuarios', function (Blueprint $table) {
-            $table->string('cpf', 11)->comment('CPF sem formatação')->primary();
+            $table->char('cpf', 11)->comment('CPF sem formatação')->primary();
             $table->timestamps();
             $table->string('nome');
             $table->string('email')->unique();
@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->unique('pin')->whereNotNull('pin');
 
-            $table->string('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente e ascii para melhorar performance')->nullable();
+            $table->char('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente e ascii para melhorar performance')->nullable();
             $table->rememberToken();
         });
 
