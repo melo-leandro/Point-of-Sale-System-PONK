@@ -1,0 +1,136 @@
+/* Wrapper e container */
+.wrapper {
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  position: relative;
+  z-index: 1;
+  padding: 0;
+}
+.container {
+  height: 80vh;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1.5rem;
+}
+
+/* Painel de itens */
+.item-panel {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+  flex: 1 1 33.33%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Status */
+.status-box {
+  display: flex;
+  height: 8rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #a7f3d0;
+}
+.status-box .title,
+.status-box .subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+.status-value {
+  font-size: 3rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Terminal */
+.terminal-box {
+  display: flex;
+  height: 7rem;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fecaca;
+  padding: 1rem;
+}
+.terminal-box .title {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+.terminal-value {
+  font-size: 3rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Ações */
+.actions-box {
+  display: flex;
+  height: 15rem;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fecaca;
+  padding: 0.5rem;
+}
+.actions-box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.actions-box li {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.125rem;
+}
+
+/* Painel principal */
+.main-panel {
+  flex: 2 1 66.66%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #a7f3d0;
+}
+
+/* Título movimentação */
+.mov-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 3px solid #d1d5db;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+/* Tabela */
+.table-wrapper {
+  max-height: 61vh;
+  width: 100%;
+  overflow-y: auto;
+}
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #9ca3af;
+  text-align: center;
+}
+.table-wrapper th,
+.table-wrapper td {
+  border: 1px solid #9ca3af;
+  padding: 0.5rem;
+}
+.table-wrapper th {
+  font-weight: bold;
+}
