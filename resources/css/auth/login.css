@@ -1,4 +1,4 @@
-body {
+body{
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     display: flex;
@@ -12,6 +12,8 @@ body {
     padding: 2rem;
     width: 100%;
     max-width: 400px;
+    z-index: 1; /* conserto d card de login foi esses dois aq  */
+    position: relative;
 }
 .logo {
     text-align: center;
