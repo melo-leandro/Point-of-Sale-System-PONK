@@ -1,5 +1,6 @@
 import "../../css/statusCaixa.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 export default function StatusCaixa() {
@@ -32,6 +33,8 @@ export default function StatusCaixa() {
     }, []);
 
     return (
+        <>
+        <Head title="Status do Caixa" />
         <AuthenticatedLayout>
             <div className="wrapper">
                 <div className="container">
@@ -95,5 +98,6 @@ export default function StatusCaixa() {
                 </div>
             </div>
         </AuthenticatedLayout>
+        </>
     );
 }

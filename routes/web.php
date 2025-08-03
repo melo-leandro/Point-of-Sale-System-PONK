@@ -22,7 +22,7 @@ Route::get('/pointOfSale', function () {
     return Inertia::render('PointOfSale');
 })->middleware(['auth', 'verified'])->name('pointOfSale');
 
-Route::get('/statuscaixa', function () {
+Route::get('/statusCaixa', function () {
     return Inertia::render('StatusCaixa');
 })->middleware(['auth', 'verified'])->name('StatusCaixa');
 

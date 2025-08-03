@@ -1,4 +1,5 @@
 import "../../css/PointOfSale.css";
+import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useEffect } from "react";
 
@@ -27,11 +28,13 @@ export default function PointOfSale() {
 
 
     return (
-    <AuthenticatedLayout>
-        <div className="point-of-sale-container">
-            <div className="point-of-sale-header">
-                <h1>NOME DOS ITENS AQUI IMPLEMENTAR</h1>
-            </div>
+        <>
+        <Head title="Ponto de Venda" />
+        <AuthenticatedLayout>
+            <div className="point-of-sale-container">
+                <div className="point-of-sale-header">
+                    <h1>NOME DOS ITENS AQUI IMPLEMENTAR</h1>
+                </div>
 
             <div id="item-panel">
                 {/* Coluna lateral */}
@@ -106,5 +109,6 @@ export default function PointOfSale() {
             </div>
         </div>
     </AuthenticatedLayout>
+    </>
 );
 }
