@@ -27,13 +27,22 @@ class VendaController extends Controller
         return redirect()->route('vendas.index');
     }
 
-    public function adicionarItem(ItemVendaRequest $request, $id) {
-        
+    public function adicionarItem(Request $request) {
+        $request->validate([
+            'produto_id' => 'required|integer|exists:produtos,id',
+            'qtde' => 'required|integer|min:1',
+            'id' => 'required|integer|exists:vendas,id'
+        ]);
         
         try{
             DB::beginTransaction();
             
-            $itemVenda = new ItemVenda($request->all());
+            $itemVenda = new ItemVenda([
+                'produto_id' => $request->input('produto_id'),
+                'qtde' => $request->input('qtde')
+            ]);
+            
+            $id = $request->input('id');
             $venda = Venda::findOrFail($id);
 
             if(!$venda) {
@@ -165,7 +174,7 @@ class VendaController extends Controller
         }
     }
 
-    public function calculaTroco(Request $request) {
+    private function calculaTroco(Request $request) {
         $request->validate([
             'valor_pago' => 'required|numeric|min:0',
             'id' => 'required|integer|exists:vendas,id'
@@ -183,10 +192,6 @@ class VendaController extends Controller
 
             if($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
-            }
-
-            if($venda->forma_pagamento !== 'dinheiro') {
-                throw new \Exception('Venda só devolve troco se pagamento for realizado em dinheiro!');
             }
 
             $valorPago = $request->input('valor_pago');
@@ -254,10 +259,15 @@ class VendaController extends Controller
         }
     }
 
-    public function finalizarVenda($id) {
+    public function finalizarVenda(Request $request) {
+        request->validate([
+            'id' => 'required|integer|exists:vendas,id'
+        ]);
+
         try{
             DB::beginTransaction();
             
+            $id = $request->input('id');
             $venda = Venda::findOrFail($id);
 
             if(!$venda) {
@@ -278,6 +288,12 @@ class VendaController extends Controller
 
             DB::commit();
 
+            if ($venda->forma_pagamento === 'dinheiro') {
+                $troco = $this->calculaTroco($request);
+                return redirect()->route('vendas.show', $id)
+                            ->with('success', 'Venda finalizada com sucesso! Troco: ' . $troco['troco']);
+            }
+            
             return redirect()->route('vendas.show', $id);
         } catch (\Exception $e) {
             DB::rollBack();

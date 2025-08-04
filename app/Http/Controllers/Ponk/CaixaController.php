@@ -14,26 +14,29 @@ class CaixaController extends Controller
         return view('caixas.index', compact('caixas'));
     }
 
-    public function checkCaixaStatus($id) {
-        $caixa = Caixa::find($id);
-        return $caixa?->aberto ?? false;
-    }
-
+    
     public function store(CaixaRequest $request) {
         Caixa::create($request->all());
         return redirect()->route('caixas.index');
     }
-
+    
     public function destroy($id) {
         Caixa::destroy($id);
         return redirect()->route('caixas.index');
     }
+    
+    public function checkCaixaStatus(Request $request) {
+        validate($request, [
+            'id' => 'required|exists:caixas,id',
+        ]);
+
+        $id = request()->input('id');
+        $caixa = Caixa::find($id);
+        return $caixa?->aberto ?? false;
+    }
 
     // Processa a abertura do caixa
-    public function abrir(CaixaRequest $request)
-    {
-        $validated = $request->validated();
-
+    public function abrir() {
         try {
             DB::beginTransaction();
             $caixa = Caixa::where('user_id', Auth::id())->first();
@@ -66,10 +69,7 @@ class CaixaController extends Controller
     }
 
     // Processa o fechamento do caixa
-    public function fechar(CaixaRequest $request)
-    {
-        $validated = $request->validated();
-
+    public function fechar() {
         try {
             DB::beginTransaction();
             $caixa = Caixa::where('user_id', Auth::id())->first();
@@ -98,5 +98,10 @@ class CaixaController extends Controller
                              ->with('error', 'Erro ao fechar o caixa: ' . $e->getMessage());
         }
 
+    }
+    
+    public function abrirGaveta() {
+        // Integração com hardware (se aplicável)
+        return app('App\Http\Controllers\Ponk\HardwareController')->abrirGavetaDoCaixa();
     }
 }
