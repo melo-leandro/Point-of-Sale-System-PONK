@@ -157,12 +157,15 @@
   border-collapse: collapse;
   border-radius: 18px;
   table-layout: fixed;
+  align-self: flex-start;
+  height: auto;
 }
 
 .carrinho td, .carrinho th {
   border: 0px solid #0076c4;
   padding: 4px 7px;
-  width: 1%;}
+  width: 1%;
+}
 
 .carrinho tbody td {
   font-size: 13px;
