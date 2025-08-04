@@ -83,19 +83,46 @@ export default function StatusCaixa({ vendas }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Array.from({ length: 36 }).map(
-                                        (_, idx) => (
-                                            <tr key={idx}>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                                <td>{idx + 1}</td>
-                                            </tr>
-                                        ),
-                                    )}
+                                    {vendas.map((venda) => (
+                                        <tr key={venda.id}>
+                                            <td>
+                                                {new Date(
+                                                    venda.created_at,
+                                                ).toLocaleString('pt-BR', {
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                })}
+                                            </td>
+                                            <td>
+                                                {venda.forma_pagamento ===
+                                                'dinheiro'
+                                                    ? 'Sim'
+                                                    : 'Não'}
+                                            </td>
+                                            <td>
+                                                {venda.forma_pagamento ===
+                                                'cartao_credito'
+                                                    ? 'Sim'
+                                                    : 'Não'}
+                                            </td>
+                                            <td>
+                                                {venda.forma_pagamento ===
+                                                'cartao_debito'
+                                                    ? 'Sim'
+                                                    : 'Não'}
+                                            </td>
+                                            <td>
+                                                {venda.forma_pagamento === 'pix'
+                                                    ? 'Sim'
+                                                    : 'Não'}
+                                            </td>
+                                            <td>{venda.valor_total}</td>
+                                            <td>{venda.id}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
