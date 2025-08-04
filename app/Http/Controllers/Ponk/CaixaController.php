@@ -104,4 +104,5 @@ class CaixaController extends Controller
         // Integração com hardware (se aplicável)
         return app('App\Http\Controllers\Ponk\HardwareController')->abrirGavetaDoCaixa();
     }
+
 }

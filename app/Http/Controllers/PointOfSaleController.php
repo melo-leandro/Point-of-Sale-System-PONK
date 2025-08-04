@@ -9,6 +9,7 @@ use App\Models\Venda;
 use App\Models\Produto;
 use App\Models\Caixa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PointOfSaleController extends Controller
 {
@@ -19,18 +20,23 @@ class PointOfSaleController extends Controller
             return redirect()->route('login');
         }
 
-        $user = auth()->user()->load(['caixa', 'vendas.produtos']);
+        $user = auth()->user();
+        try {
+            $caixa = Caixa::where('user_id', $user->id)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->back()->with('error', 'Usuário não está associado a um caixa');
+        }
 
-        if (!$user->caixa_id) {
-            return redirect()->back()
-                ->with('error', 'Usuário não está associado a um caixa');
+        $vendas = Venda::where('caixa_id', $caixa->numeracao)->get();
+        if ($vendas->isEmpty()) {
+            $vendas = [];
         }
 
         return Inertia::render('PointOfSale', [  
             'user' => $user,
-            'caixa_id' => $user->caixa_id,
-            'caixa_status' => $user->caixa->aberto ? 'Aberto' : 'Fechado',    
-            'vendas' => $user->vendas()->with('produtos')->get(),
+            'caixa_id' => $caixa->numeracao,
+            'caixa_status' => $caixa->aberto ? 'Aberto' : 'Fechado',    
+            'vendas' => $vendas,
         ]);
     }
 
@@ -53,6 +59,7 @@ class PointOfSaleController extends Controller
             'fechar' => app('App\Http\Controllers\Ponk\CaixaController')->fechar(),
             'verificar-status' => app('App\Http\Controllers\Ponk\CaixaController')->checkCaixaStatus($request),
             'abrir-gaveta' => app('App\Http\Controllers\Ponk\CaixaController')->abrirGaveta(),
+            'imprimir-cupom' => app('App\Http\Controllers\Ponk\CaixaController')->imprimeCupom(),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }

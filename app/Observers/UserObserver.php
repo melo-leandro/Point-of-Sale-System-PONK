@@ -4,26 +4,26 @@ namespace App\Observers;
 
 use App\Models\User;
 use App\Models\Caixa;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserObserver
 {
     public function created(User $user)
     {
-        try{
+        try {
             DB::beginTransaction();
             $caixa = Caixa::create([
                 'user_id' => $user->id,
-                'aberto' => false,
+                'aberto' => true,
                 'saldo_inicial' => 0
             ]);
 
-            $user->update(['caixa_id' => $caixa->id]);
-
             DB::commit();
-
+            Log::info("Caixa {$caixa->id} criado com sucesso para o usuário {$user->id}");
         } catch (\Exception $e) {
             DB::rollBack();
-            logger()->error('Falha ao criar caixa para usuário: ' . $e->getMessage());
+            Log::error('Falha ao criar caixa para usuário: ' . $e->getMessage());
             $user->delete();
             throw $e;
         }

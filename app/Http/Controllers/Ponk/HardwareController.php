@@ -15,4 +15,11 @@ class HardwareController extends Controller {
         return response()->json(['message' => 'Gaveta do caixa aberta com sucesso!']);
     }
 
+    public function imprimeCupomFiscal() {
+
+        // Lógica para imprimir cupom fiscal caso houvesse um hardware integrado ao nosso software
+        // Que existiria se fosse vendido a um mercado real
+
+        return response()->json(['message' => 'Cupom fiscal impresso com sucesso!']);
+    }
 }

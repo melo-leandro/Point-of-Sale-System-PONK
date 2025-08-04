@@ -290,15 +290,24 @@ class VendaController extends Controller
 
             if ($venda->forma_pagamento === 'dinheiro') {
                 $troco = $this->calculaTroco($request);
+
+                app('App\Http\Controllers\Ponk\CaixaController')->abrirGaveta();
+
                 return redirect()->route('vendas.show', $id)
                             ->with('success', 'Venda finalizada com sucesso! Troco: ' . $troco['troco']);
             }
             
+            imprimeCupom();
             return redirect()->route('vendas.show', $id);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
                         ->with('error', 'Erro ao finalizar venda: ' . $e->getMessage());
         }
+    }
+
+    private function imprimeCupom() {
+        // Integração com hardware (se aplicável)
+        return app('App\Http\Controllers\Ponk\HardwareController')->imprimeCupomFiscal();
     }
 }

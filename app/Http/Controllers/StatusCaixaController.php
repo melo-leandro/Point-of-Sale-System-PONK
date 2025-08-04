@@ -14,17 +14,22 @@ class StatusCaixaController extends Controller
             return redirect()->route('login');
         }
 
-        $caixa_numeracao = auth()->user()->caixa_id;
+        $user = auth()->user();
 
-        $vendas = Venda::where('caixa_id' === $caixa_numeracao)->get();
+        $user = auth()->user();
+        $caixa = Caixa::where('user_id', $user->id)->first();
 
-        $caixa = Caixa::where('numeracao', $caixa_numeracao)->first();
+        $vendas = Venda::where('caixa_id', $caixa->numeracao)->get();
+        if ($vendas->isEmpty()) {
+            $vendas = [];
+        }
 
         if (!$caixa) {
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Caixa not found for the current user.');
         }
 
         return Inertia::render('StatusCaixa', [
+            'user' => $user,
             'vendas' => $vendas,
             'caixa_id' => $caixa->id,
             'aberto' => $caixa->aberto,
