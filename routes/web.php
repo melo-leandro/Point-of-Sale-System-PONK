@@ -2,6 +2,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PointOfSaleController;
 use App\Http\Controllers\StatusCaixaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
@@ -22,9 +23,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/pointOfSale', function () {
-    return Inertia::render('PointOfSale');
-})->middleware(['auth', 'verified'])->name('pointOfSale');
+Route::get('/pointOfSale', [PointOfSaleController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('pointOfSale');
 
 Route::get('/statusCaixa', [StatusCaixaController::class, 'index'])
     ->middleware(['auth', 'verified'])
