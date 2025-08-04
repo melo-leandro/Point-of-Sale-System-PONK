@@ -30,36 +30,36 @@ export default function PointOfSale() {
         <>
             <Head title="Ponto de Venda" />
             <AuthenticatedLayout>
-                <div className="point-of-sale-container">
-                    <div className="point-of-sale-header">
+                <div className="ponto-venda-container">
+                    <div className="cabecalho-ponto-venda">
                         <h1>NOME DOS ITENS AQUI IMPLEMENTAR</h1>
                     </div>
 
-                    <div id="item-panel">
+                    <div id="painel-itens">
                         {/* Coluna lateral */}
-                        <div className="sidebar-column">
-                            <div className="dark-card discount">
-                                <div className="card-title">Desconto</div>
-                                <div className="card-input-wrapper">
+                        <div className="barra-lateral">
+                            <div className="cartao-escuro desconto">
+                                <div className="titulo-cartao">Desconto</div>
+                                <div className="cartao-input-wrapper">
                                     <input placeholder="Insira o valor desejado..." />
                                 </div>
                             </div>
 
-                            <div className="dark-card unit-price">
-                                <div className="card-title">Valor unitário</div>
-                                <div className="card-value">
+                            <div className="cartao-escuro valor-unitario">
+                                <div className="titulo-cartao">Valor unitário</div>
+                                <div className="valor-cartao">
                                     <h2>R$ 0,00</h2>
                                 </div>
                             </div>
 
-                            <div className="dark-card item-total">
-                                <div className="card-title">Total do item</div>
-                                <div className="card-value">
+                            <div className="cartao-escuro total-item">
+                                <div className="titulo-cartao">Total do item</div>
+                                <div className="valor-cartao">
                                     <h2>R$ 0,00</h2>
                                 </div>
                             </div>
 
-                            <div className="shortcuts-card">
+                            <div className="cartao-atalhos">
                                 <ul>
                                     <li>F1 - Excluir item</li>
                                     <li>F2 - Inserir quantidade/peso</li>
@@ -69,7 +69,7 @@ export default function PointOfSale() {
                         </div>
 
                         {/* Coluna principal */}
-                        <div className="main-column">
+                        <div className="coluna-principal">
                             <div className="carrinho-wrapper">
                                 <table className="carrinho">
                                     <thead>
@@ -101,11 +101,11 @@ export default function PointOfSale() {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="total-card">
-                                <div className="label">
+                            <div className="cartao-total">
+                                <div className="rotulo">
                                     <h2>Valor total</h2>
                                 </div>
-                                <div className="value">
+                                <div className="valor">
                                     <h2>R$ 0,00</h2>
                                 </div>
                             </div>
