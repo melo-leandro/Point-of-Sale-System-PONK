@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests\VendaRequest;
-// use App\Http\Requests\ItemVendaRequest;
+use App\Http\Requests\VendaRequest;
+use App\Http\Requests\ItemVendaRequest;
 use App\Models\Venda;
 use App\Models\ItemVenda;
 

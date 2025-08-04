@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Venda extends Model
+class PontoVenda extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class Venda extends Model
     protected function casts(): array
     {
         return [
-            'valor_total' => 'decimal:2'
+            'saldo_inicial' => 'decimal:2'
         ];
     }
     
@@ -27,22 +27,22 @@ class Venda extends Model
     {
         if (!is_numeric($value)) {
             throw ValidationException::withMessages([
-                'valor_total' => 'O saldo inicial deve ser um número.'
+                'saldo_inicial' => 'O saldo inicial deve ser um número.'
             ]);
         }
 
         if($value < 0) {
             throw ValidationException::withMessages([
-                'valor_total' => 'O saldo inicial não pode ser negativo.'
+                'saldo_inicial' => 'O saldo inicial não pode ser negativo.'
             ]);
         }
 
-        $this->attributes['valor_total'] = $value;
+        $this->attributes['saldo_inicial'] = $value;
     }
 
-    public function itens()
+    public function vendas()
     {
-        return $this->hasMany(ItemVenda::class);
+        return $this->hasMany(Venda::class);
     }
     
 }
