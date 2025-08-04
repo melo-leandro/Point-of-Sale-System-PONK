@@ -123,6 +123,7 @@
 /* Wrapper da tabela */
 .carrinho-wrapper {
   display: flex;
+  height: 100%;
   background: white;
   align-items: top;
   justify-content: center;
