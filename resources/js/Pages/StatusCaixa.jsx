@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import '../../css/statusCaixa.css';
-export default function StatusCaixa() {
+export default function StatusCaixa({ vendas }) {
     const handleMenuClick = (type) => {
         if (type === 'inicio') {
             router.visit(route('dashboard'));
@@ -82,19 +82,37 @@ export default function StatusCaixa() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {Array.from({ length: 24 }).map(
-                                                (_, idx) => (
-                                                    <tr key={idx}>
-                                                        <td>13:00</td>
-                                                        <td>R$ 10,00</td>
-                                                        <td>Não</td>
-                                                        <td>Não</td>
-                                                        <td>Não</td>
-                                                        <td>R$ 10,00</td>
-                                                        <td>{idx + 1}</td>
-                                                    </tr>
-                                                ),
-                                            )}
+                                            {vendas.map((venda) => (
+                                                <tr key={venda.id}>
+                                                    <td>{venda.created_at}</td>
+                                                    <td>
+                                                        {venda.forma_pagamento ===
+                                                        'dinheiro'
+                                                            ? 'Sim'
+                                                            : 'Não'}
+                                                    </td>
+                                                    <td>
+                                                        {venda.forma_pagamento ===
+                                                        'cartao_credito'
+                                                            ? 'Sim'
+                                                            : 'Não'}
+                                                    </td>
+                                                    <td>
+                                                        {venda.forma_pagamento ===
+                                                        'cartao_debito'
+                                                            ? 'Sim'
+                                                            : 'Não'}
+                                                    </td>
+                                                    <td>
+                                                        {venda.forma_pagamento ===
+                                                        'pix'
+                                                            ? 'Sim'
+                                                            : 'Não'}
+                                                    </td>
+                                                    <td>{venda.valor_total}</td>
+                                                    <td>{venda.id}</td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>

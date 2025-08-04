@@ -2,8 +2,8 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\VendaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatusCaixaController;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,9 +26,9 @@ Route::get('/pointOfSale', function () {
     return Inertia::render('PointOfSale');
 })->middleware(['auth', 'verified'])->name('pointOfSale');
 
-Route::get('/statusCaixa', function () {
-    return Inertia::render('StatusCaixa');
-})->middleware(['auth', 'verified'])->name('StatusCaixa');
+Route::get('/statusCaixa', [StatusCaixaController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('StatusCaixa');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
