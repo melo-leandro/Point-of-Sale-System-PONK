@@ -42,7 +42,7 @@
 }
 
 /* Alturas específicas */
-.cartao-escuro.desconto { height: 128px; }
+.cartao-escuro.codigo-desconto { height: 128px; }
 .cartao-escuro.valor-unitario,
 .cartao-escuro.total-item { height: 112px; }
 
@@ -54,18 +54,18 @@
   color: white;
   padding-left: 28px;
 }
-.cartao-escuro.desconto > .titulo-cartao { padding: 10px 0 9px 28px; }
+.cartao-escuro.codigo-desconto > .titulo-cartao { padding: 10px 0 9px 28px; }
 .cartao-escuro.valor-unitario > .titulo-cartao,
 .cartao-escuro.total-item > .titulo-cartao { padding: 10px 0 4px 28px; }
 
-/* Input de desconto */
-.cartao-escuro.desconto .cartao-input-wrapper {
+/* Input de codigo-desconto */
+.cartao-escuro.codigo-desconto .cartao-input-wrapper {
     display: flex;
     justify-content: center;
     padding-bottom: 16px;
     margin-bottom: 8px;
 }
-.cartao-escuro.desconto .cartao-input-wrapper input {
+.cartao-escuro.codigo-desconto .cartao-input-wrapper input {
   width: 325px;
   height: 48px;
   border-radius: 18px;

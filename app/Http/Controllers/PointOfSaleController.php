@@ -11,7 +11,7 @@ class PointOfSaleController extends Controller
     {
 
         return Inertia::render('PointOfSale', [
-        
+            
         ]);
     }
 }

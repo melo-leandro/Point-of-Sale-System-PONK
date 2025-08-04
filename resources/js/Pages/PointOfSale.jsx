@@ -1,9 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
+import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 
 export default function PointOfSale() {
+
+    const [state, setState] = useState('inputProdutos');
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.key) {
@@ -38,12 +42,9 @@ export default function PointOfSale() {
                     <div id="painel-itens">
                         {/* Coluna lateral */}
                         <div className="barra-lateral">
-                            <div className="cartao-escuro desconto">
-                                <div className="titulo-cartao">Desconto</div>
-                                <div className="cartao-input-wrapper">
-                                    <input placeholder="Insira o valor desejado..." />
-                                </div>
-                            </div>
+                            <CodigoOrDesconto
+                                state={state}
+                            />
 
                             <div className="cartao-escuro valor-unitario">
                                 <div className="titulo-cartao">Valor unitário</div>
