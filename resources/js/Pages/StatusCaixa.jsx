@@ -54,7 +54,10 @@ export default function StatusCaixa({ vendas }) {
             <Head title="Status do Caixa" />
             <AuthenticatedLayout>
                 <div className="painel-wrapper">
-                    <div className="painel-itens" style={{ transform: `scale(${scale})` }}>
+                    <div
+                        className="painel-itens"
+                        style={{ transform: `scale(${scale})` }}
+                    >
                         <div className="barra-lateral">
                             <div className="cartao-escuro status">
                                 <div className="titulo-cartao">
