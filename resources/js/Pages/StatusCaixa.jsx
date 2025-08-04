@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
 import '../../css/statusCaixa.css';
 
-export default function StatusCaixa() {
+export default function StatusCaixa({ vendas }) {
     const handleMenuClick = (type) => {
         if (type === 'inicio') {
             router.visit(route('dashboard'));
