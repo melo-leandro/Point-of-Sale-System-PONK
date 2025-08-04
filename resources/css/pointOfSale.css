@@ -1,11 +1,11 @@
 /* Container principal */
-.point-of-sale-container {
+.ponto-venda-container {
   width: 1400px;
   margin: 0 auto;
 }
 
 /* Nome do item */
-.point-of-sale-header {
+.cabecalho-ponto-venda {
   font-size: 32px;
   font-weight: bold;
   text-align: center;
@@ -18,14 +18,14 @@
 }
 
 /* Painel de itens */
-#item-panel {
+#painel-itens {
   display: flex;
   justify-content: center;
   gap: 16px;
 }
 
 /* Coluna lateral */
-.sidebar-column {
+.barra-lateral {
   width: 420px;
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
 }
 
 /* Cards azuis escuros */
-.dark-card {
+.cartao-escuro {
   display: flex;
   flex-direction: column;
   border-radius: 18px;
@@ -42,30 +42,30 @@
 }
 
 /* Alturas específicas */
-.dark-card.discount { height: 128px; }
-.dark-card.unit-price,
-.dark-card.item-total { height: 112px; }
+.cartao-escuro.codigo-desconto { height: 128px; }
+.cartao-escuro.valor-unitario,
+.cartao-escuro.total-item { height: 112px; }
 
 /* Header interno de cada card */
-.dark-card > .card-title {
+.cartao-escuro > .titulo-cartao {
   align-self: flex-start;
   font-size: 28px;
   font-weight: 600;
   color: white;
   padding-left: 28px;
 }
-.dark-card.discount > .card-title { padding: 10px 0 9px 28px; }
-.dark-card.unit-price > .card-title,
-.dark-card.item-total > .card-title { padding: 10px 0 4px 28px; }
+.cartao-escuro.codigo-desconto > .titulo-cartao { padding: 10px 0 9px 28px; }
+.cartao-escuro.valor-unitario > .titulo-cartao,
+.cartao-escuro.total-item > .titulo-cartao { padding: 10px 0 4px 28px; }
 
-/* Input de desconto */
-.dark-card.discount .card-input-wrapper {
+/* Input de codigo-desconto */
+.cartao-escuro.codigo-desconto .cartao-input-wrapper {
     display: flex;
     justify-content: center;
     padding-bottom: 16px;
     margin-bottom: 8px;
 }
-.dark-card.discount .card-input-wrapper input {
+.cartao-escuro.codigo-desconto .cartao-input-wrapper input {
   width: 325px;
   height: 48px;
   border-radius: 18px;
@@ -78,8 +78,8 @@
 }
 
 /* Valor unitário e total do item */
-.dark-card.unit-price .card-value,
-.dark-card.item-total .card-value {
+.cartao-escuro.valor-unitario .valor-cartao,
+.cartao-escuro.total-item .valor-cartao {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
@@ -88,15 +88,15 @@
   padding-bottom: 12px;
   margin-top: -16px;
 }
-.dark-card.unit-price .card-value h2,
-.dark-card.item-total .card-value h2 {
+.cartao-escuro.valor-unitario .valor-cartao h2,
+.cartao-escuro.total-item .valor-cartao h2 {
   font-size: 50px;
   font-weight: 600;
   color: white;
 }
 
 /* Lista de atalhos (F1, F2...) */
-.shortcuts-card {
+.cartao-atalhos {
   display: flex;
   height: 128px;
   background: #003254;
@@ -105,23 +105,23 @@
   justify-content: center;
   padding: 8px;
 }
-.shortcuts-card ul {
+.cartao-atalhos ul {
   margin: 0;
   padding: 0 0 0 16px;
   list-style: none;
 }
-.shortcuts-card ul li {
+.cartao-atalhos ul li {
   font-size: 20px;
   font-weight: 600;
   color: white;
   margin-bottom: 2px;
 }
-.shortcuts-card ul li:last-child {
+.cartao-atalhos ul li:last-child {
   margin-bottom: 0;
 }
 
 /* Coluna principal */
-.main-column {
+.coluna-principal {
   width: 900px;
   display: flex;
   flex-direction: column;
@@ -244,27 +244,27 @@
 
 
 /* Valor total geral */
-.total-card {
+.cartao-total {
   display: flex;
   height: 128px;
   background: #003254;
   border-radius: 18px;
 }
-.total-card .label {
+.cartao-total .rotulo {
   align-self: flex-start;
   font-size: 48px;
   font-weight: 600;
   color: white;
   padding: 24px 0 0 24px;
 }
-.total-card .value {
+.cartao-total .valor {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex: 1;
   padding-right: 32px;
 }
-.total-card .value h2 {
+.cartao-total .valor h2 {
   font-size: 96px;
   font-weight: 600;
   color: white;
