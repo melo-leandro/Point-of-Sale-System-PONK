@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_item');
             $table->timestamps();
 
-            $table->numeric('qtde', 10, 2)->default(0);
+            $table->decimal('qtde')->default(0);
             
             $table->string('produto_id');
             $table->foreign('produto_id')->references('codigo')->on('produtos')->onUpdate('cascade');

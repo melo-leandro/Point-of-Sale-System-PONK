@@ -4,7 +4,6 @@ use App\Http\Controllers\VendaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

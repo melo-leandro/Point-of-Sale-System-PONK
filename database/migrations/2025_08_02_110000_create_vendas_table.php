@@ -20,12 +20,14 @@ return new class extends Migration
 
             $table->char('cpf_cliente', 11)->nullable()->comment('CPF sem formatação');
 
+            $table->boolean('cancelada')->default(false);
+
             $table->foreignId('usuario_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
 
             $table->integer('caixa_id');
             $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict');
 
-            $table->enum('unidforma_pagamentoade', ['dinheiro', 'cartao_credito', 'cartao_debito', 'pix'])->default('dinheiro');
+            $table->enum('forma_pagamento', ['dinheiro', 'cartao_credito', 'cartao_debito', 'pix'])->default('dinheiro');
 
         });
 
@@ -35,9 +37,6 @@ return new class extends Migration
         ");
         
     }
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('vendas');

@@ -11,43 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-<<<<<<<< HEAD:database/migrations/2025_08_02_100000_create_usuarios_table.php
-        Schema::create('usuarios', function (Blueprint $table) {
-            $table->string('cpf', 11)->comment('CPF sem formatação')->primary();
-            $table->timestamps();
-            $table->string('nome');
-========
         Schema::create('users', function (Blueprint $table) {
 
             $table->id()->comment('Identificador único do usuário')->primary();
             $table->char('cpf', 11)->comment('CPF sem formatação')->nullable();
             $table->timestamps();
             $table->string('name');
->>>>>>>> migrations:database/migrations/2025_08_02_100000_create_users_table.php
             $table->string('email')->unique();
             $table->string('password');
 
+            $table->integer('caixa_id')->comment('ID do caixa associado ao usuário');
+            $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict')->unique();
 
             $table->unique('pin')->whereNotNull('pin');
-<<<<<<<< HEAD:database/migrations/2025_08_02_100000_create_usuarios_table.php
-
-            $table->string('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente e ascii para melhorar performance')->nullable();
+            $table->string('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente')->nullable();
             $table->rememberToken();
         });
-
-        DB::statement("ALTER TABLE usuarios 
-========
-            $table->char('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente')->nullable();
-
-            $table->rememberToken();
-        });
-
-        DB::statement("ALTER TABLE users
-             
->>>>>>>> migrations:database/migrations/2025_08_02_100000_create_users_table.php
-            ADD CONSTRAINT pin_valido_check 
-            CHECK (pin IS NULL OR (pin ~ '^[0-9]{4}$' AND LENGTH(pin) = 4));"
-        );
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -70,7 +49,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
