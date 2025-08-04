@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Requests\UserRequest;
 use App\Models\ItemVenda;
 
 class ItemVendaController extends Controller
@@ -14,11 +14,11 @@ class ItemVendaController extends Controller
 
     public function store(Request $request) {
         ItemVenda::create($request->all());
-        return redirect()->route('itensVenda.index');
+        return redirect()->route('itemVendas.index');
     }
 
     public function destroy($id) {
         ItemVenda::destroy($id);
-        return redirect()->route('itensVenda.index');
+        return redirect()->route('itemVendas.index');
     }
 }

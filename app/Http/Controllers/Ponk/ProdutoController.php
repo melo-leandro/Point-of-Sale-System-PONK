@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Requests\ProdutoRequest;
 use App\Models\Produto;
 
 class ProdutoController extends Controller
@@ -12,7 +12,7 @@ class ProdutoController extends Controller
         return view('produtos.index', compact('produtos'));
     }
 
-    public function store(Request $request) {
+    public function store(ProdutoRequest $request) {
         Produto::create($request->all());
         return redirect()->route('produtos.index');
     }

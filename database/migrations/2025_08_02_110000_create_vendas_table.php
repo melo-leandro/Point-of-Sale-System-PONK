@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->char('cpf_cliente', 11)->nullable()->comment('CPF sem formatação');
 
-            $table->boolean('cancelada')->default(false);
+            $table->enum('status', ['pendente', 'finalizada', 'cancelada'])->default('pendente');
 
             $table->foreignId('usuario_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
 
