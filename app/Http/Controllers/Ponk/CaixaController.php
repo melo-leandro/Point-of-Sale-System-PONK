@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Requests\CaixaRequest;
+use App\Http\Requests\CaixaRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Caixa;
 
 class CaixaController extends Controller
@@ -13,7 +15,7 @@ class CaixaController extends Controller
     }
 
     public function checkCaixaStatus($id) {
-        $caixa = CaixaRequest::find($id);
+        $caixa = Caixa::find($id);
         return $caixa?->aberto ?? false;
     }
 
@@ -73,11 +75,11 @@ class CaixaController extends Controller
             $caixa = Caixa::where('user_id', Auth::id())->first();
 
             if (!$caixa) {
-                return redirect()->route('caixa.show', $caixa->numeracao)
+                return redirect()->route('caixa.index')
                             ->with('error', 'Nenhum caixa encontrado!');
             }
 
-            if ($caixa->fechado) {
+            if (!$caixa->aberto) {
                 return redirect()->route('caixa.show', $caixa->numeracao)
                                 ->with('error', 'O caixa deste usuário já está fechado!');
             }

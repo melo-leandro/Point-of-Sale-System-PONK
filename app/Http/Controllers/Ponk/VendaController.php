@@ -6,6 +6,9 @@ use App\Http\Requests\VendaRequest;
 use App\Http\Requests\ItemVendaRequest;
 use App\Models\Venda;
 use App\Models\ItemVenda;
+use App\Models\Produto;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VendaController extends Controller
 {
@@ -24,21 +27,30 @@ class VendaController extends Controller
         return redirect()->route('vendas.index');
     }
 
-    public function adicionarItem(VendaRequest $request, $id) {
-
+    public function adicionarItem(ItemVendaRequest $request, $id) {
+        
+        
         try{
             DB::beginTransaction();
             
-            $venda = Venda::findOrFail($id);
             $itemVenda = new ItemVenda($request->all());
-            $venda->itens()->save($itemVenda);
+            $venda = Venda::findOrFail($id);
 
-            if($venda->status === 'finalizada' || $venda->status === 'cancelada') {
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+            
+            if($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
             }
+            
+            $venda->itens()->save($itemVenda);
 
-            $produto = $itemVenda->find($itemVenda->produto_id);
-            $valor = $produto->$valor_unitario * $itemVenda->qtd;
+            $produto = Produto::find($itemVenda->produto_id);
+            if (!$produto) {
+                throw new \Exception('Produto não encontrado');
+            }
+            $valor = $produto->valor_unitario * $itemVenda->qtde;
             $venda->update([
                 'valor_total' => $venda->valor_total + $valor
             ]);
@@ -56,16 +68,21 @@ class VendaController extends Controller
     public function removerItem(Request $request) {
         $request->validate([
                 'pin' => 'required|string',
-                'venda_id' => 'required|integer|exists:vendas,id'
+                'venda_id' => 'required|integer|exists:vendas,id',
+                'item_id' => 'required|integer|exists:item_vendas,id'
         ]);
         
         try{
             DB::beginTransaction();
-
-            $venda = Venda::findOrFail($request->input('venda_id'));
+            $venda_id = $request->input('venda_id');
+            $venda = Venda::findOrFail($venda_id);
             $usuario = auth()->user();
 
-            if($venda->status === 'finalizada' || $venda->status === 'cancelada') {
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+
+            if($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
             }
 
@@ -75,9 +92,20 @@ class VendaController extends Controller
             }
 
             $item_id = $request->input('item_id');
-            $item = $venda->itens()->findOrFail($item_id);
-            $produto = $item->find($item->produto_id);
-            $valor = $produto->valor_unitario * $item->qtd;
+
+            $item = $venda->itens()->where('id', $item_id)->firstOrFail();
+
+            if (!$item) {
+                throw new \Exception('Item não encontrado na venda');
+            }
+
+            $produto = Produto::find($item->produto_id);
+
+            if (!$produto) {
+                throw new \Exception('Produto não encontrado');
+            }
+
+            $valor = $produto->valor_unitario * $item->qtde;
             $item->delete();
 
             $venda->update([
@@ -94,19 +122,25 @@ class VendaController extends Controller
         }
     } 
 
-    public function aplicarDesconto(Request $request, $venda_id) {
+    public function aplicarDesconto(Request $request) {
         $request->validate([
             'pin' => 'required|string', 
-            'percentual_desconto' => 'required|numeric|min:0|max:100'
+            'percentual_desconto' => 'required|numeric|min:0|max:100',
+            'id' => 'required|integer|exists:vendas,id'
         ]);
 
         try {
             DB::beginTransaction();
 
+            $id = $request->input('id');
             $venda = Venda::findOrFail($id);
             $usuario = auth()->user();
 
-            if($venda->status === 'finalizada' || $venda->status === 'cancelada') {
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+
+            if($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
             }   
 
@@ -123,7 +157,7 @@ class VendaController extends Controller
 
             DB::commit();
             
-            return redirect()->route('vendas.show', $venda_id);
+            return redirect()->route('vendas.show', $id);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
@@ -133,15 +167,21 @@ class VendaController extends Controller
 
     public function calculaTroco(Request $request) {
         $request->validate([
-            'valor_pago' => 'required|numeric|min:0'
+            'valor_pago' => 'required|numeric|min:0',
+            'id' => 'required|integer|exists:vendas,id'
         ]);
 
         try {
             DB::beginTransaction();
+            
+            $id = $request->input('id');
+            $venda = Venda::findOrFail($id);
 
-            $venda = Venda::findOrFail($venda_id);
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
 
-            if($venda->status === 'finalizada' || $venda->status === 'cancelada') {
+            if($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
             }
 
@@ -159,7 +199,10 @@ class VendaController extends Controller
 
             DB::commit();
 
-            return number_format($troco, 2, ',', '.');
+            // Retorna o valor numerico do troco com duas casas
+            return response()->json([
+                'troco' => round($troco, 2)
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
@@ -167,16 +210,22 @@ class VendaController extends Controller
         }
     }
 
-    public function cancelarVenda($id){
+    public function cancelarVenda(Request $request) {
         $request->validate([
-            'pin' => 'required|string'
+            'pin' => 'required|string',
+            'id' => 'required|integer|exists:vendas,id'
         ]);
 
         try {
             DB::beginTransaction();
-
+            
+            $id = $request->input('id');
             $venda = Venda::findOrFail($id);
             $usuario = auth()->user();
+
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
 
             if (empty($usuario->pin)) {
                 throw new \Exception('Operação só pode ser realizada por um gerente!');
@@ -192,7 +241,7 @@ class VendaController extends Controller
             }
 
             $venda->update([
-                'cancelada' => true
+                'status' => 'cancelada'
             ]);
 
             DB::commit();
@@ -202,6 +251,38 @@ class VendaController extends Controller
             DB::rollBack();
             return redirect()->back()
                         ->with('error', 'Falha ao cancelar venda: ' . $e->getMessage());
+        }
+    }
+
+    public function finalizarVenda($id) {
+        try{
+            DB::beginTransaction();
+            
+            $venda = Venda::findOrFail($id);
+
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+
+            if ($venda->status === 'finalizada') {
+                return redirect()->route('vendas.show', $id)
+                            ->with('error', 'Esta venda já está finalizada.');
+            }
+
+            if ($venda->status === 'cancelada') {
+                return redirect()->route('vendas.show', $id)
+                            ->with('error', 'Vendas canceladas não podem ser finalizadas.');
+            }
+
+            $venda->update(['status' => 'finalizada']);
+
+            DB::commit();
+
+            return redirect()->route('vendas.show', $id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                        ->with('error', 'Erro ao finalizar venda: ' . $e->getMessage());
         }
     }
 }

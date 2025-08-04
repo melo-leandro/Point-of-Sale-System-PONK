@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
 
-            $table->integer('caixa_id')->comment('ID do caixa associado ao usuário');
-            $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict')->unique();
+            //$table->integer('caixa_id')->comment('ID do caixa associado ao usuário');
+            //$table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict')->unique();
 
             $table->unique('pin')->whereNotNull('pin');
             $table->string('pin', 4)->charset('ascii')->comment('PIN de 4 dígitos para autenticação de gerente')->nullable();
