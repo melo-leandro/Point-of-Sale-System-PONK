@@ -25,16 +25,19 @@ class VendaRequest extends FormRequest
                     }
                 }
             ],
+            
             'forma_pagamento' => [
                 'required',
                 'string',
                 'in:dinheiro,cartao_credito,cartao_debito,pix'
             ],
+
             'valor_total' => [
                 'required',
                 'numeric',
                 'min:0'
             ],
+
             'caixa_id' => [
                 'required',
                 'integer',
@@ -51,6 +54,7 @@ class VendaRequest extends FormRequest
                     }
                 }
             ],
+
             'usuario_id' => [
                 'required',
                 'exists:users,id',
@@ -59,6 +63,12 @@ class VendaRequest extends FormRequest
                         $fail('O usuário selecionado deve ser o usuário autenticado.');
                     }
                 }
+            ],
+
+            'status' => [
+                'required',
+                'string',
+                'in:pendente,finalizada,cancelada'
             ]
         ];
     }

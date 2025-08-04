@@ -17,7 +17,7 @@ class ItemVendaRequest extends FormRequest
         return [
             'qtd' => [
                 'required',
-                'numeric',
+                'decimal:5,3',
                 'min:0.001',
                 function ($attribute, $value, $fail) {
                     $produto = Produto::where('codigo', $this->produto_id)->first();
@@ -31,11 +31,13 @@ class ItemVendaRequest extends FormRequest
                     }
                 }
             ],
+
             'venda_id' => [
                 'required',
-                'numeric',
+                'number',
                 'exists:vendas,id'
             ],
+            
             'produto_id' => [
                 'required',
                 'string',

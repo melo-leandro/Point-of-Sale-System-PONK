@@ -19,6 +19,7 @@ class UserRequest extends FormRequest
                 'string',
                 'max:255'
             ],
+            
             'cpf' => [
                 'required',
                 'string',
@@ -30,6 +31,7 @@ class UserRequest extends FormRequest
                     }
                 }
             ],
+
             'email' => [
                 'required',
                 'string',
@@ -42,12 +44,14 @@ class UserRequest extends FormRequest
                     }
                 }
             ],
+
             'password' => [
                 'required',
                 'string',
                 'min:8',
                 'confirmed'
             ],
+
             'pin' => [
                 'nullable',
                 'string',
