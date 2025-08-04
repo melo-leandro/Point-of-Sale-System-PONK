@@ -1,8 +1,7 @@
-import "../../css/statusCaixa.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
+import '../../css/statusCaixa.css';
 export default function StatusCaixa() {
     const handleMenuClick = (type) => {
         if (type === 'inicio') {
@@ -34,70 +33,76 @@ export default function StatusCaixa() {
 
     return (
         <>
-        <Head title="Status do Caixa" />
-        <AuthenticatedLayout>
-            <div className="wrapper">
-                <div className="container">
-                    <div id="item-panel" className="item-panel">
-                        <div className="sidebar">
-                            <div className="status-box">
-                                <div className="title">STATUS DO CAIXA</div>
-                                <h2 className="status-value">ABERTO</h2>
-                                <div className="subtitle">abertura e data eu acho texto grande</div>
+            <Head title="Status do Caixa" />
+            <AuthenticatedLayout>
+                <div className="wrapper">
+                    <div className="container">
+                        <div id="item-panel" className="item-panel">
+                            <div className="sidebar">
+                                <div className="status-box">
+                                    <div className="title">STATUS DO CAIXA</div>
+                                    <h2 className="status-value">ABERTO</h2>
+                                    <div className="subtitle">
+                                        abertura e data eu acho texto grande
+                                    </div>
+                                </div>
+
+                                <div className="terminal-box">
+                                    <div className="title">TERMINAL</div>
+                                    <h2 className="terminal-value">CAIXA 1</h2>
+                                </div>
+
+                                <div className="actions-box">
+                                    <ul>
+                                        <li>F1 – Voltar ao Menu</li>
+                                        <li>F2 – Abrir caixa</li>
+                                        <li>F3 – Gerar relatório PDF</li>
+                                        <li>F4 – Mudar Terminal</li>
+                                        <li>F5 – Atualizar</li>
+                                        <li>F6 – Fechar caixa</li>
+                                    </ul>
+                                </div>
                             </div>
 
-                            <div className="terminal-box">
-                                <div className="title">TERMINAL</div>
-                                <h2 className="terminal-value">CAIXA 1</h2>
-                            </div>
-
-                            <div className="actions-box">
-                                <ul>
-                                    <li>F1 – Voltar ao Menu</li>
-                                    <li>F2 – Abrir caixa</li>
-                                    <li>F3 – Gerar relatório PDF</li>
-                                    <li>F4 – Mudar Terminal</li>
-                                    <li>F5 – Atualizar</li>
-                                    <li>F6 – Fechar caixa</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div className="main-panel">
-                            <h2 className="mov-title">MOVIMENTAÇÃO DO CAIXA</h2>
-                            <div className="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Data e Hora</th>
-                                            <th>Dinheiro</th>
-                                            <th>Crédito</th>
-                                            <th>Débito</th>
-                                            <th>Pix</th>
-                                            <th>Total</th>
-                                            <th>N° Venda</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Array.from({ length: 24 }).map((_, idx) => (
-                                            <tr key={idx}>
-                                                <td>13:00</td>
-                                                <td>R$ 10,00</td>
-                                                <td>Não</td>
-                                                <td>Não</td>
-                                                <td>Não</td>
-                                                <td>R$ 10,00</td>
-                                                <td>{idx + 1}</td>
+                            <div className="main-panel">
+                                <h2 className="mov-title">
+                                    MOVIMENTAÇÃO DO CAIXA
+                                </h2>
+                                <div className="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Data e Hora</th>
+                                                <th>Dinheiro</th>
+                                                <th>Crédito</th>
+                                                <th>Débito</th>
+                                                <th>Pix</th>
+                                                <th>Total</th>
+                                                <th>N° Venda</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {Array.from({ length: 24 }).map(
+                                                (_, idx) => (
+                                                    <tr key={idx}>
+                                                        <td>13:00</td>
+                                                        <td>R$ 10,00</td>
+                                                        <td>Não</td>
+                                                        <td>Não</td>
+                                                        <td>Não</td>
+                                                        <td>R$ 10,00</td>
+                                                        <td>{idx + 1}</td>
+                                                    </tr>
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </AuthenticatedLayout>
+            </AuthenticatedLayout>
         </>
     );
 }

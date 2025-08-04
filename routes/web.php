@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\VendaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
@@ -47,5 +47,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
 });
+
+Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
 
 require __DIR__.'/auth.php';
