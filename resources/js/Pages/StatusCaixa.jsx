@@ -84,7 +84,20 @@ export default function StatusCaixa({ vendas }) {
                                         <tbody>
                                             {vendas.map((venda) => (
                                                 <tr key={venda.id}>
-                                                    <td>{venda.created_at}</td>
+                                                    <td>
+                                                        {new Date(
+                                                            venda.created_at,
+                                                        ).toLocaleString(
+                                                            'pt-BR',
+                                                            {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                year: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                            },
+                                                        )}
+                                                    </td>
                                                     <td>
                                                         {venda.forma_pagamento ===
                                                         'dinheiro'
