@@ -69,8 +69,8 @@ export default function StatusCaixa({ vendas }) {
 
                     {/* Coluna principal */}
                     <div className="coluna-principal">
-                        <div className="carrinho-wrapper">
-                            <table className="carrinho">
+                        <div className="mov-wrapper">
+                            <table className="mov">
                                 <thead>
                                     <tr>
                                         <th>Data e Hora</th>
