@@ -121,7 +121,7 @@
 }
 
 /* Wrapper da tabela */
-.carrinho-wrapper {
+.mov-wrapper {
   display: flex;
   height: 100%;
   background: white;
@@ -134,21 +134,21 @@
 }
 
 /* Scrollbar */
-.carrinho-wrapper::-webkit-scrollbar {
+.mov-wrapper::-webkit-scrollbar {
   width: 12px;
 }
 
-.carrinho-wrapper::-webkit-scrollbar-track {
+.mov-wrapper::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.carrinho-wrapper::-webkit-scrollbar-thumb {
+.mov-wrapper::-webkit-scrollbar-thumb {
   background: #003254;
   border-radius: 10px;
 }
 
 /* Tabela de itens */
-.carrinho {
+.mov {
   font-family: Arial, Helvetica, sans-serif;
   border: 0px solid #FFFFFF;
   background-color: #FFFFFF;
@@ -161,26 +161,26 @@
   height: auto;
 }
 
-.carrinho td, .carrinho th {
+.mov td, .mov th {
   border: 0px solid #0076c4;
   padding: 4px 7px;
   width: 1%;
 }
 
-.carrinho tbody td {
+.mov tbody td {
   font-size: 13px;
   color: #000000;
 }
 
-.carrinho td:nth-child(even) {
+.mov td:nth-child(even) {
   background: #D0E4F5;
 }
 
-.carrinho thead {
+.mov thead {
   background: #003254;
 }
 
-.carrinho thead th {
+.mov thead th {
   font-size: 15px;
   font-weight: bold;
   color: #FFFFFF;
@@ -189,7 +189,7 @@
   width: 1%;
 }
 
-.carrinho thead th:first-child {
+.mov thead th:first-child {
   border-left: none;
 }
 
