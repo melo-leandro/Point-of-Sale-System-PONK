@@ -10,8 +10,9 @@ class Caixa extends Model
 
     protected $fillable = [
         'aberto',
-        'email',
-        'saldo_inicial'
+        'saldo_inicial',
+        'user_id',
+        'aberto_em'
     ];
 
     protected $hidden = [];
@@ -34,6 +35,12 @@ class Caixa extends Model
         if($value < 0) {
             throw ValidationException::withMessages([
                 'saldo_inicial' => 'O saldo inicial não pode ser negativo.'
+            ]);
+        }
+
+        if(!$this->aberto) {
+            throw ValidationException::withMessages([
+                'saldo_inicial' => 'Não é possível definir o saldo inicial quando o caixa está fechado.'
             ]);
         }
 

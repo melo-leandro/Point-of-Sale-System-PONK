@@ -12,6 +12,7 @@ class Venda extends Model
         'cpf_cliente',
         'forma_pagamento',
         'valor_total',
+        'status'
     ];
 
     protected $hidden = [];
@@ -40,9 +41,27 @@ class Venda extends Model
         $this->attributes['valor_total'] = $value;
     }
 
+    public function setStatusAttribute($value)
+    {
+        $validStatuses = ['pendente', 'finalizada', 'cancelada'];
+        if (!in_array($value, $validStatuses)) {
+            throw ValidationException::withMessages([
+                'status' => 'Status inválido. Deve ser um dos seguintes: ' . implode(', ', $validStatuses)
+            ]);
+        }
+
+        $this->attributes['status'] = $value;
+    }
+
     public function itens()
     {
         return $this->hasMany(ItemVenda::class);
     }
+
+    public function getItens()
+    {
+        return $this->itens()->orderBy('created_at')->get();
+    }
+        
     
 }
