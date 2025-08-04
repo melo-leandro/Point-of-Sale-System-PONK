@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
+
 export default function StatusCaixa() {
     const handleMenuClick = (type) => {
         if (type === 'inicio') {
@@ -36,22 +37,26 @@ export default function StatusCaixa() {
         <>
         <Head title="Status do Caixa" />
         <AuthenticatedLayout>
-            <div className="wrapper">
-                <div className="container">
-                    <div id="item-panel" className="item-panel">
-                        <div className="sidebar">
-                            <div className="status-box">
-                                <div className="title">STATUS DO CAIXA</div>
-                                <h2 className="status-value">ABERTO</h2>
-                                <div className="subtitle">abertura e data eu acho texto grande</div>
+                <div className="painel-itens">
+                    <div className="barra-lateral">
+                        <div className="cartao-escuro status">
+                                <div className="titulo-cartao">Status do Caixa</div>
+                                <div className="valor-status">
+                                    <h2>ABERTO</h2>
+                                </div>
+                                <div className="subtitulo-status">
+                                    <h2>aberto na hora tal e no dia tal</h2>
+                                </div>
                             </div>
-
-                            <div className="terminal-box">
-                                <div className="title">TERMINAL</div>
-                                <h2 className="terminal-value">CAIXA 1</h2>
+        
+                            <div className="cartao-escuro terminal">
+                                <div className="titulo-cartao">Terminal</div>
+                                <div className="valor-cartao">
+                                    <h2>000</h2>
+                                </div>
                             </div>
-
-                            <div className="actions-box">
+        
+                            <div className="cartao-atalhos">
                                 <ul>
                                     <li>F1 – Voltar ao Menu</li>
                                     <li>F2 – Abrir caixa</li>
@@ -62,42 +67,40 @@ export default function StatusCaixa() {
                                 </ul>
                             </div>
                         </div>
-
-                        <div className="main-panel">
-                            <h2 className="mov-title">MOVIMENTAÇÃO DO CAIXA</h2>
-                            <div className="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Data e Hora</th>
-                                            <th>Dinheiro</th>
-                                            <th>Crédito</th>
-                                            <th>Débito</th>
-                                            <th>Pix</th>
-                                            <th>Total</th>
-                                            <th>N° Venda</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Array.from({ length: 24 }).map((_, idx) => (
-                                            <tr key={idx}>
-                                                <td>13:00</td>
-                                                <td>R$ 10,00</td>
-                                                <td>Não</td>
-                                                <td>Não</td>
-                                                <td>Não</td>
-                                                <td>R$ 10,00</td>
-                                                <td>{idx + 1}</td>
+        
+                        {/* Coluna principal */}
+                        <div className="coluna-principal">
+                            <div className="carrinho-wrapper">
+                                    <table className="carrinho">
+                                        <thead>
+                                            <tr>
+                                                <th>Data e Hora</th>
+                                                <th>Dinheiro</th>
+                                                <th>Crédito</th>
+                                                <th>Débito</th>
+                                                <th>Pix</th>
+                                                <th>Total</th>
+                                                <th>N° Venda</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {Array.from({ length: 36 }).map((_, idx) => (
+                                                <tr key={idx}>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </AuthenticatedLayout>
+            </AuthenticatedLayout>
         </>
     );
 }
