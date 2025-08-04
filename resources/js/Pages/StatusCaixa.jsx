@@ -2,8 +2,8 @@ import "../../css/statusCaixa.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
-import '../../css/statusCaixa.css';
-export default function StatusCaixa({ vendas }) {
+
+export default function StatusCaixa() {
     const handleMenuClick = (type) => {
         if (type === 'inicio') {
             router.visit(route('dashboard'));
@@ -34,43 +34,43 @@ export default function StatusCaixa({ vendas }) {
 
     return (
         <>
-            <Head title="Status do Caixa" />
-            <AuthenticatedLayout>
-                <div className="wrapper">
-                    <div className="container">
-                        <div id="item-panel" className="item-panel">
-                            <div className="sidebar">
-                                <div className="status-box">
-                                    <div className="title">STATUS DO CAIXA</div>
-                                    <h2 className="status-value">ABERTO</h2>
-                                    <div className="subtitle">
-                                        abertura e data eu acho texto grande
-                                    </div>
+        <Head title="Status do Caixa" />
+        <AuthenticatedLayout>
+                <div className="painel-itens">
+                    <div className="barra-lateral">
+                        <div className="cartao-escuro status">
+                                <div className="titulo-cartao">Status do Caixa</div>
+                                <div className="valor-status">
+                                    <h2>ABERTO</h2>
                                 </div>
-
-                                <div className="terminal-box">
-                                    <div className="title">TERMINAL</div>
-                                    <h2 className="terminal-value">CAIXA 1</h2>
-                                </div>
-
-                                <div className="actions-box">
-                                    <ul>
-                                        <li>F1 – Voltar ao Menu</li>
-                                        <li>F2 – Abrir caixa</li>
-                                        <li>F3 – Gerar relatório PDF</li>
-                                        <li>F4 – Mudar Terminal</li>
-                                        <li>F5 – Atualizar</li>
-                                        <li>F6 – Fechar caixa</li>
-                                    </ul>
+                                <div className="subtitulo-status">
+                                    <h2>aberto na hora tal e no dia tal</h2>
                                 </div>
                             </div>
-
-                            <div className="main-panel">
-                                <h2 className="mov-title">
-                                    MOVIMENTAÇÃO DO CAIXA
-                                </h2>
-                                <div className="table-wrapper">
-                                    <table>
+        
+                            <div className="cartao-escuro terminal">
+                                <div className="titulo-cartao">Terminal</div>
+                                <div className="valor-cartao">
+                                    <h2>000</h2>
+                                </div>
+                            </div>
+        
+                            <div className="cartao-atalhos">
+                                <ul>
+                                    <li>F1 – Voltar ao Menu</li>
+                                    <li>F2 – Abrir caixa</li>
+                                    <li>F3 – Gerar relatório PDF</li>
+                                    <li>F4 – Mudar Terminal</li>
+                                    <li>F5 – Atualizar</li>
+                                    <li>F6 – Fechar caixa</li>
+                                </ul>
+                            </div>
+                        </div>
+        
+                        {/* Coluna principal */}
+                        <div className="coluna-principal">
+                            <div className="carrinho-wrapper">
+                                    <table className="carrinho">
                                         <thead>
                                             <tr>
                                                 <th>Data e Hora</th>
@@ -83,48 +83,15 @@ export default function StatusCaixa({ vendas }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {vendas.map((venda) => (
-                                                <tr key={venda.id}>
-                                                    <td>
-                                                        {new Date(
-                                                            venda.created_at,
-                                                        ).toLocaleString(
-                                                            'pt-BR',
-                                                            {
-                                                                day: '2-digit',
-                                                                month: '2-digit',
-                                                                year: 'numeric',
-                                                                hour: '2-digit',
-                                                                minute: '2-digit',
-                                                            },
-                                                        )}
-                                                    </td>
-                                                    <td>
-                                                        {venda.forma_pagamento ===
-                                                        'dinheiro'
-                                                            ? 'Sim'
-                                                            : 'Não'}
-                                                    </td>
-                                                    <td>
-                                                        {venda.forma_pagamento ===
-                                                        'cartao_credito'
-                                                            ? 'Sim'
-                                                            : 'Não'}
-                                                    </td>
-                                                    <td>
-                                                        {venda.forma_pagamento ===
-                                                        'cartao_debito'
-                                                            ? 'Sim'
-                                                            : 'Não'}
-                                                    </td>
-                                                    <td>
-                                                        {venda.forma_pagamento ===
-                                                        'pix'
-                                                            ? 'Sim'
-                                                            : 'Não'}
-                                                    </td>
-                                                    <td>{venda.valor_total}</td>
-                                                    <td>{venda.id}</td>
+                                            {Array.from({ length: 36 }).map((_, idx) => (
+                                                <tr key={idx}>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
+                                                    <td>{idx + 1}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -132,8 +99,6 @@ export default function StatusCaixa({ vendas }) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
             </AuthenticatedLayout>
         </>
     );
