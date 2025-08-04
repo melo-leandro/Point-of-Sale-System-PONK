@@ -1,7 +1,11 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Head, useForm } from '@inertiajs/react';
 import '../../../css/auth/login.css';
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import { Head, useForm } from '@inertiajs/react';
+import '../../../css/auth/login.css';
 
+export default function Login({ status, errors: pageErrors }) {
 export default function Login({ status, errors: pageErrors }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',

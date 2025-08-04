@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('produtos', function (Blueprint $table) {
-            $table->string('codigo', 13)->comment('Código no Padrão EAN-13')->primary();
+            $table->char('codigo', 13)->comment('Código no Padrão EAN-13')->primary();
             $table->timestamps();
             $table->string('nome');
-            $table->string('unidade');
+            $table->enum('unidade', ['UN', 'KG', 'LT', 'MT'])->default('UN');
             $table->decimal('valor_unitario', 10, 2)->default(0);
         });
     }

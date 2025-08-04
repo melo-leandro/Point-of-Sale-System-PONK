@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id('id_item');
             $table->timestamps();
 
-            $table->decimal('qtde', 10, 2)->default(0);
+            $table->numeric('qtde', 10, 2)->default(0);
             
-            $table->string('id_produto');
-            $table->foreign('id_produto')->references('codigo')->on('produtos')->onUpdate('cascade');
+            $table->string('produto_id');
+            $table->foreign('produto_id')->references('codigo')->on('produtos')->onUpdate('cascade');
             
             $table->foreignId('venda_id')->constrained('vendas')->onUpdate('cascade')->onDelete('restrict');
         });

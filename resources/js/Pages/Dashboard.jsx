@@ -62,6 +62,7 @@ export default function Dashboard() {
                         <div className="menu-icon">📈</div>
                     </div>
                     <div className="menu-key">F2</div>
+                    <div className="menu-key">F2</div>
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -11,12 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE TYPE forma_pagamento_tipo AS ENUM (
-            'dinheiro', 
-            'cartao_credito', 
-            'cartao_debito', 
-            'pix'
-        )");
 
         Schema::create('vendas', function (Blueprint $table) {
             $table->id()->comment('Identificador único da venda');
@@ -25,28 +19,21 @@ return new class extends Migration
             $table->decimal('valor_total', 10, 2)->default(0);
 
             $table->char('cpf_cliente', 11)->nullable()->comment('CPF sem formatação');
-            $table->char('cpf_operador', 11)->comment('CPF sem formatação');
 
-            $table->foreign('cpf_operador')->references('cpf')->on('usuarios')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('usuario_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
 
             $table->integer('caixa_id');
             $table->foreign('caixa_id')->references('numeracao')->on('caixas')->onUpdate('cascade')->onDelete('restrict');
 
+            $table->enum('unidforma_pagamentoade', ['dinheiro', 'cartao_credito', 'cartao_debito', 'pix'])->default('dinheiro');
+
         });
-
-        DB::statement("ALTER TABLE vendas
-            ADD COLUMN forma_pagamento forma_pagamento_tipo");
-
 
         DB::statement("ALTER TABLE vendas 
             ADD CONSTRAINT cpf_cliente_valido_check 
             CHECK (cpf_cliente IS NULL OR cpf_cliente ~ '^[0-9]{11}$')
         ");
         
-        DB::statement("ALTER TABLE vendas 
-            ADD CONSTRAINT cpf_operador_valido_check 
-            CHECK (cpf_operador ~ '^[0-9]{11}$')
-        ");
     }
     /**
      * Reverse the migrations.
