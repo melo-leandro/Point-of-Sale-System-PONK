@@ -31,8 +31,16 @@ class StatusCaixaController extends Controller
         return Inertia::render('StatusCaixa', [
             'user' => $user,
             'vendas' => $vendas,
-            'caixa_id' => $caixa->id,
+            'caixa_numeracao' => $caixa->numeracao,
             'aberto' => $caixa->aberto,
         ]);
+    }
+    public function acoesCaixa(Request $request, $acao)
+    {
+        return match ($acao) {
+            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir(),
+            'fechar' => app('App\Http\Controllers\Ponk\CaixaController')->fechar(),
+            default => response()->json(['erro' => 'Ação não encontrada'], 404)
+        };
     }
 }

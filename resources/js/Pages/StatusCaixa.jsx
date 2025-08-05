@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import '../../css/statusCaixa.css';
 
-export default function StatusCaixa({ vendas }) {
+export default function StatusCaixa({ vendas, user, caixa_numeracao, aberto }) {
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
@@ -45,6 +45,21 @@ export default function StatusCaixa({ vendas }) {
         // }
     };
 
+    const handleEvent = (type) => {
+        switch (type) {
+            case 'abrir': {
+                router.post('/statusCaixa/acoes/abrir');
+                break;
+            }
+            case 'fechar': {
+                break;
+            }
+            default: {
+                return;
+            }
+        }
+    };
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.key) {
@@ -52,6 +67,20 @@ export default function StatusCaixa({ vendas }) {
                     event.preventDefault();
 
                     handleMenuClick('inicio');
+
+                    break;
+
+                case 'F2':
+                    event.preventDefault();
+
+                    handleEvent('abrir');
+
+                    break;
+
+                case 'F6':
+                    event.preventDefault();
+
+                    handleEvent('fechar');
 
                     break;
 
@@ -86,7 +115,11 @@ export default function StatusCaixa({ vendas }) {
                                 </div>
 
                                 <div className="valor-status">
-                                    <h2>ABERTO</h2>
+                                    <h2>
+                                        {aberto === 'cartao_credito'
+                                            ? 'ABERTO'
+                                            : 'FECHADO'}
+                                    </h2>
                                 </div>
 
                                 <div className="subtitulo-status">
@@ -98,7 +131,7 @@ export default function StatusCaixa({ vendas }) {
                                 <div className="titulo-cartao">Terminal</div>
 
                                 <div className="valor-cartao">
-                                    <h2>000</h2>
+                                    <h2>{caixa_numeracao}</h2>
                                 </div>
                             </div>
 
@@ -109,8 +142,6 @@ export default function StatusCaixa({ vendas }) {
                                     <li>F2 – Abrir caixa</li>
 
                                     <li>F3 – Gerar relatório PDF</li>
-
-                                    <li>F4 – Mudar Terminal</li>
 
                                     <li>F5 – Atualizar</li>
 

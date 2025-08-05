@@ -62,4 +62,7 @@ Route::post('/vendas/adicionar-item', [VendaController::class, 'adicionarItem'])
 Route::post('/pointOfSale/acoes/{acao}', [PointOfSaleController::class, 'acoesVenda'])
     ->name('pointOfSale.acoesVenda');
 
+Route::post('/statusCaixa/acoes/{acao}', [StatusCaixaController::class, 'acoesCaixa'])
+    ->name('StatusCaixa.acoesCaixa');
+
 require __DIR__.'/auth.php';
