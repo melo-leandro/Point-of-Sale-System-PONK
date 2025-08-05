@@ -8,33 +8,6 @@ import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
-    if(!caixa_status || caixa_status !== 'aberto') {
-        const [countdown, setCountdown] = useState(5);
-
-        // Hook para redirecionamento automático com contador regressivo
-        useEffect(() => {
-            const interval = setInterval(() => {
-                setCountdown((prev) => {
-                    if (prev <= 1) {
-                        clearInterval(interval);
-                        router.visit('/');
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-
-            return () => clearInterval(interval);
-        }, []);
-
-        return (
-            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
-                <h2>Caixa fechado ou não disponível. Por favor, abra um caixa para continuar.</h2>
-                <p>Redirecionando para a página de caixas em {countdown} segundo{countdown !== 1 ? 's' : ''}...</p>
-            </div>
-
-        );
-    }
     // Helper function to safely convert values to numbers
     const toNumber = (value) => {
         if (value === null || value === undefined || value === '') return 0;
@@ -49,9 +22,36 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     const [valorTotal, setValorTotal] = useState(0);
     const [loadingVenda, setLoadingVenda] = useState(true);
     const [tentouCriar, setTentouCriar] = useState(false);
+    const [countdown, setCountdown] = useState(5);
 
+    // Hook para redirecionamento automático com contador regressivo
+    useEffect(() => {
+        if (!caixa_status || caixa_status !== 'Aberto') {
+            const interval = setInterval(() => {
+                setCountdown((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(interval);
+                        router.visit('/statusCaixa');
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
 
-    
+            return () => clearInterval(interval);
+        }
+    }, [caixa_status]);
+
+    // Early return para caixa fechado
+    if (!caixa_status || caixa_status !== 'Aberto') {
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
+                <h2>Caixa fechado ou não disponível. Por favor, abra um caixa para continuar.</h2>
+                <p>Redirecionando para a página de caixas em {countdown} segundo{countdown !== 1 ? 's' : ''}...</p>
+            </div>
+        );
+    }
+
     const vendaAtual = vendas && vendas.find(v => v.status === 'pendente' && v.caixa_id === caixa_id);
     
     // Função para carregar itens da venda
@@ -204,10 +204,10 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                 <table className="carrinho">
                                     <thead>
                                         <tr>
-                                            <th>Nº Item</th>
+                                            <th>Nº</th>
                                             <th>Código</th>
                                             <th>Descrição</th>
-                                            <th>Quantidade</th>
+                                            <th>Qtd.</th>
                                             <th>Valor Unitário</th>
                                             <th>Total</th>
                                         </tr>
