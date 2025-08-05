@@ -18,7 +18,7 @@ class Caixa extends Model
         'aberto',
         'saldo_inicial',
         'user_id',
-        'aberto_em'
+        'status_alterado_em'
     ];
 
     protected $hidden = [];

@@ -27,7 +27,7 @@ class CaixaRequest extends FormRequest
             ],
 
             'status_alterado_em' => [
-                'nullable',
+                'required',
                 'date'
             ],
 
