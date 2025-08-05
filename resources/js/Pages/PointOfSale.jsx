@@ -8,6 +8,14 @@ import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
+    // Helper function to safely convert values to numbers
+    const toNumber = (value) => {
+        if (value === null || value === undefined || value === '') return 0;
+        if (typeof value === 'number') return value;
+        const num = parseFloat(value);
+        return isNaN(num) ? 0 : num;
+    };
+
     const [screenState, setScreenState] = useState('inputProdutos');
     const [itens, setItens] = useState([]);
     const [produtos, setProdutos] = useState([]);
@@ -17,6 +25,52 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
     
     const vendaAtual = vendas && vendas.find(v => v.status === 'pendente' && v.caixa_id === caixa_id);
+    
+    // Função para carregar itens da venda
+    const carregarItensVenda = () => {
+        if (vendaAtual && vendaAtual.id) {
+            fetch('/pointOfSale/acoes/itens-adicionados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({
+                    venda_id: vendaAtual.id
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    setItens(data.itens || []);
+                    setProdutos(data.produtos || []);
+                    
+                    // Calcula o valor total
+                    const total = (data.itens || []).reduce((acc, item) => {
+                        const produto = (data.produtos || []).find(p => p.codigo === item.produto_id);
+                        if (produto && produto.valor_unitario) {
+                            const valorUnitario = toNumber(produto.valor_unitario);
+                            const quantidade = toNumber(item.qtde);
+                            return acc + (valorUnitario * quantidade);
+                        }
+                        return acc;
+                    }, 0);
+                    setValorTotal(total);
+                } else {
+                    console.error('Erro na resposta:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar itens:', error);
+            });
+        }
+    };
     
         // Cria uma venda automaticamente ao entrar na página se não houver venda pendente
     useEffect(() => {
@@ -44,8 +98,16 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
             });
         } else if (vendaAtual) {
             setLoadingVenda(false);
+            carregarItensVenda(); // Carrega os itens quando a venda estiver disponível
         }
     }, [vendaAtual, caixa_id, tentouCriar, vendas]);
+
+    // Carrega itens quando a venda muda
+    useEffect(() => {
+        if (vendaAtual && !loadingVenda) {
+            carregarItensVenda();
+        }
+    }, [vendaAtual]);
 
     
     useEffect(() => {
@@ -93,6 +155,7 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                             <CodigoOrDesconto
                                 state={screenState}
                                 vendaAtual={vendaAtual}
+                                onItemAdded={carregarItensVenda}
                             />
 
                             <div className="cartao-escuro valor-unitario">
@@ -133,19 +196,28 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {itens.map((item, idx) => {
-                                            const produto = produtos[idx] || {};
+                                        {itens.length > 0 ? itens.map((item, idx) => {
+                                            const produto = produtos.find(p => p.codigo === item.produto_id) || {};
+                                            const valorUnitario = toNumber(produto.valor_unitario);
+                                            const quantidade = toNumber(item.qtde);
+                                            const total = valorUnitario * quantidade;
                                             return (
-                                                <tr key={item.id || idx}>
+                                                <tr key={item.id_item || idx}>
                                                     <td>{idx + 1}</td>
                                                     <td>{item.produto_id}</td>
-                                                    <td>{produto.nome || ''}</td>
-                                                    <td>{item.qtde}</td>
-                                                    <td>R$ {produto.valor_unitario ? produto.valor_unitario.toFixed(2) : '0,00'}</td>
-                                                    <td>R$ {produto.valor_unitario && item.qtde ? (produto.valor_unitario * item.qtde).toFixed(2) : '0,00'}</td>
+                                                    <td>{produto.nome || 'Produto não encontrado'}</td>
+                                                    <td>{quantidade}</td>
+                                                    <td>R$ {valorUnitario.toFixed(2).replace('.', ',')}</td>
+                                                    <td>R$ {total.toFixed(2).replace('.', ',')}</td>
                                                 </tr>
                                             );
-                                        })}
+                                        }) : (
+                                            <tr>
+                                                <td colSpan="6" style={{textAlign: 'center', padding: '20px', color: '#666'}}>
+                                                    Nenhum item adicionado
+                                                </td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -154,7 +226,7 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                     <h2>Valor total</h2>
                                 </div>
                                 <div className="valor">
-                                    <h2>R$ {valorTotal.toFixed(2)}</h2>
+                                    <h2>R$ {toNumber(valorTotal).toFixed(2).replace('.', ',')}</h2>
                                 </div>
                             </div>
                         </div>

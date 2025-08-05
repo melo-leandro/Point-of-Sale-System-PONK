@@ -53,19 +53,45 @@ class VendaController extends Controller
 
         
         if ($venda->status !== 'pendente') {
-            return redirect()->back()
-                        ->with('error', 'Operação não pode ser concluida!');
+            return response()->json([
+                'success' => false,
+                'message' => 'Operação não pode ser concluida!'
+            ], 422);
         }
 
-        $itens = $venda->itens()->get();
-        // pega o nome do produto a partir do item
-        $produtos = $itens->map(function ($item) {
-            return $item->produto;
+        $itens = $venda->itens()->with('produto')->get();
+        
+        // Garante que os valores sejam retornados como números
+        $itensFormatados = $itens->map(function ($item) {
+            return [
+                'id_item' => $item->id_item,
+                'produto_id' => $item->produto_id,
+                'qtde' => (float) $item->qtde,
+                'venda_id' => $item->venda_id,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+            ];
         });
+        
+        $produtosFormatados = $itens->map(function ($item) {
+            $produto = $item->produto;
+            if ($produto) {
+                return [
+                    'codigo' => $produto->codigo,
+                    'nome' => $produto->nome,
+                    'unidade' => $produto->unidade,
+                    'valor_unitario' => (float) $produto->valor_unitario,
+                    'created_at' => $produto->created_at,
+                    'updated_at' => $produto->updated_at,
+                ];
+            }
+            return null;
+        })->filter();
 
         return response()->json([
-            'itens' => $itens,
-            'produtos' => $produtos
+            'success' => true,
+            'itens' => $itensFormatados,
+            'produtos' => $produtosFormatados
         ]);
     }
 
@@ -112,8 +138,18 @@ class VendaController extends Controller
             
             return response()->json([
                 'success' => true,
-                'item' => $itemVenda,
-                'produto' => $produto,
+                'item' => [
+                    'id_item' => $itemVenda->id_item,
+                    'produto_id' => $itemVenda->produto_id,
+                    'qtde' => (float) $itemVenda->qtde,
+                    'venda_id' => $itemVenda->venda_id,
+                ],
+                'produto' => [
+                    'codigo' => $produto->codigo,
+                    'nome' => $produto->nome,
+                    'unidade' => $produto->unidade,
+                    'valor_unitario' => (float) $produto->valor_unitario,
+                ],
                 'message' => 'Item adicionado com sucesso'
             ]);
         } catch (\Exception $e) {

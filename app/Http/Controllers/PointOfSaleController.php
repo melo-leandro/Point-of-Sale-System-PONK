@@ -52,16 +52,4 @@ class PointOfSaleController extends Controller
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }
-    
-    public function acoesCaixa(Request $request, $acao)
-    {
-        return match ($acao) {
-            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir(),
-            'fechar' => app('App\Http\Controllers\Ponk\CaixaController')->fechar(),
-            'verificar-status' => app('App\Http\Controllers\Ponk\CaixaController')->checkCaixaStatus($request),
-            'abrir-gaveta' => app('App\Http\Controllers\Ponk\CaixaController')->abrirGaveta(),
-            'imprimir-cupom' => app('App\Http\Controllers\Ponk\CaixaController')->imprimeCupom(),
-            default => response()->json(['erro' => 'Ação não encontrada'], 404)
-        };
-    }
 }
