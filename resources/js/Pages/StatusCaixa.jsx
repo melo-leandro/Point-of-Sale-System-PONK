@@ -54,6 +54,9 @@ export default function StatusCaixa({
     const handleEvent = (type) => {
         switch (type) {
             case 'abrir': {
+                if (aberto) {
+                    return;
+                }
                 const saldoInicial = prompt(
                     'Digite o saldo inicial do caixa:',
                     '0.00',
