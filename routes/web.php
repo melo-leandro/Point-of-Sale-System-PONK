@@ -62,6 +62,9 @@ Route::post('/vendas/adicionar-item', [VendaController::class, 'adicionarItem'])
 Route::post('/pointOfSale/acoes/{acao}', [PointOfSaleController::class, 'acoesVenda'])
     ->name('pointOfSale.acoesVenda');
 
+Route::get('/pointOfSale/acoes/{acao}', [PointOfSaleController::class, 'acoesVenda'])
+    ->name('pointOfSale.acoesVendaGet');
+
 Route::post('/statusCaixa/acoes/{acao}', [StatusCaixaController::class, 'acoesCaixa'])
     ->name('StatusCaixa.acoesCaixa');
 
