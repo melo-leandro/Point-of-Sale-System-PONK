@@ -5,6 +5,10 @@ use App\Models\Venda;
 use App\Models\Caixa;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+
 
 class StatusCaixaController extends Controller
 {
@@ -39,9 +43,29 @@ class StatusCaixaController extends Controller
     public function acoesCaixa(Request $request, $acao)
     {
         return match ($acao) {
-            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir(),
+            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir($request),
             'fechar' => app('App\Http\Controllers\Ponk\CaixaController')->fechar(),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }
+    public function gerarPdf(Request $request)
+{
+    $user = auth()->user();
+    $caixa = Caixa::where('user_id', $user->id)->first();
+
+    $caixa_numeracao = $caixa->numeracao;
+    $statusAlteradoData = $caixa->status_alterado_em;
+    $vendas = Venda::where('caixa_id', $caixa->numeracao)->get();
+
+    $pdf = Pdf::loadView('pdf.statusCaixa', [
+        'user' => $user,
+        'caixa_numeracao' => $caixa_numeracao,
+        'statusAlteradoData' => $statusAlteradoData,
+        'vendas' => $vendas,
+        'aberto' => $caixa->aberto,
+
+    ]);
+
+    return $pdf->download('status-caixa.pdf');
+}
 }

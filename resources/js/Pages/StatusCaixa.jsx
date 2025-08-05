@@ -54,10 +54,37 @@ export default function StatusCaixa({
     const handleEvent = (type) => {
         switch (type) {
             case 'abrir': {
-                router.post('/statusCaixa/acoes/abrir');
+                if (aberto) {
+                    return;
+                }
+                const saldoInicial = prompt(
+                    'Digite o saldo inicial do caixa:',
+                    '0.00',
+                );
+
+                if (saldoInicial !== null) {
+                    // Valida se é um número válido
+                    const saldoNumerico = parseFloat(
+                        saldoInicial.replace(',', '.'),
+                    );
+
+                    if (isNaN(saldoNumerico) || saldoNumerico < 0) {
+                        alert(
+                            'Por favor, digite um valor válido para o saldo inicial.',
+                        );
+                        return;
+                    }
+
+                    router.post('/statusCaixa/acoes/abrir', {
+                        saldo_inicial: saldoNumerico.toFixed(2),
+                    });
+                    window.location.reload();
+                }
                 break;
             }
             case 'fechar': {
+                router.post('/statusCaixa/acoes/fechar');
+                window.location.reload();
                 break;
             }
             default: {
@@ -76,6 +103,11 @@ export default function StatusCaixa({
                 case 'F2':
                     event.preventDefault();
                     handleEvent('abrir');
+                    break;
+
+                case 'F3':
+                    event.preventDefault();
+                    window.open(route('statusCaixa.pdf'), '_blank');
                     break;
                 case 'F6':
                     event.preventDefault();
@@ -111,11 +143,7 @@ export default function StatusCaixa({
                                 </div>
 
                                 <div className="valor-status">
-                                    <h2>
-                                        {aberto === 'cartao_credito'
-                                            ? 'ABERTO'
-                                            : 'FECHADO'}
-                                    </h2>
+                                    <h2>{aberto ? 'ABERTO' : 'FECHADO'}</h2>
                                 </div>
 
                                 <div className="subtitulo-status">
