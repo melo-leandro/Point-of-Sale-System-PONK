@@ -49,6 +49,8 @@ class PointOfSaleController extends Controller
             'aplicar-desconto' => app('App\Http\Controllers\Ponk\VendaController')->aplicarDesconto($request),
             'cancelar' => app('App\Http\Controllers\Ponk\VendaController')->cancelarVenda($request),
             'finalizar' => app('App\Http\Controllers\Ponk\VendaController')->finalizarVenda($request),
+            'nova-quantidade' => app('App\Http\Controllers\Ponk\VendaController')->atualizaQuantidade($request),
+            'novo-peso' => app('App\Http\Controllers\Ponk\VendaController')->atualizaPeso($request),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }

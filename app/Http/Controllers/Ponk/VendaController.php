@@ -410,6 +410,125 @@ class VendaController extends Controller
         }
     }
 
+    public function atualizaQuantidade(Request $request) {
+        $request->validate([
+            'nova_quantidade' => 'required|integer|min:1',
+            'venda_id' => 'required|integer|exists:vendas,id'
+        ], [
+            'nova_quantidade.required' => 'A quantidade é obrigatória.',
+            'nova_quantidade.integer' => 'A quantidade deve ser um número inteiro.',
+            'nova_quantidade.min' => 'A quantidade deve ser maior que zero.'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            
+            $vendaId = $request->input('venda_id');
+            $venda = Venda::findOrFail($vendaId);
+
+            if ($venda->status !== 'pendente') {
+                throw new \Exception('Operação não pode ser concluida!');
+            }
+
+            $novaQuantidade = $request->input('nova_quantidade');
+
+            $item = $venda->itens()->orderBy('created_at', 'desc')->first();
+
+            if (!$item) {
+                throw new \Exception('Nenhum item encontrado na venda');
+            }
+
+            // Get the product to calculate the price difference
+            $produto = Produto::where('codigo', $item->produto_id)->firstOrFail();
+            
+            // Calculate the difference in value
+            $quantidadeAnterior = $item->qtde;
+            $diferencaQuantidade = $novaQuantidade - $quantidadeAnterior;
+            $diferencaValor = $produto->valor_unitario * $diferencaQuantidade;
+            
+            // Update the item quantity
+            $item->update(['qtde' => $novaQuantidade]);
+            
+            // Update the sale total
+            $venda->update([
+                'valor_total' => $venda->valor_total + $diferencaValor
+            ]);
+
+            DB::commit();
+            
+            return response()->json(['success' => true, 'message' => 'Quantidade atualizada com sucesso']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Erro ao atualizar quantidade: ' . $e->getMessage()], 422);
+        }
+    }
+
+    public function atualizaPeso(Request $request) {
+        $request->validate([
+            'novo_peso' => 'required|numeric|min:0.001|max:999.999',
+            'venda_id' => 'required|integer|exists:vendas,id'
+        ], [
+            'novo_peso.required' => 'O peso é obrigatório.',
+            'novo_peso.numeric' => 'O peso deve ser um número válido.',
+            'novo_peso.min' => 'O peso deve ser maior que 0.001 kg.',
+            'novo_peso.max' => 'O peso não pode exceder 999.999 kg.'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            
+            $vendaId = $request->input('venda_id');
+            $venda = Venda::findOrFail($vendaId);
+
+            if ($venda->status !== 'pendente') {
+                throw new \Exception('Operação não pode ser concluida!');
+            }
+
+            $novoPeso = round($request->input('novo_peso'), 3); // Arredonda para 3 casas decimais
+
+            $item = $venda->itens()->orderBy('created_at', 'desc')->first();
+
+            if (!$item) {
+                throw new \Exception('Nenhum item encontrado na venda');
+            }
+
+            // Get the product to verify if it's sold by weight
+            $produto = Produto::where('codigo', $item->produto_id)->firstOrFail();
+            
+            // Check if product is sold by weight (unit should be 'kg', 'g', etc.)
+            $unidadesPeso = ['kg', 'g', 'gramas', 'quilos', 'kilo'];
+            if (!in_array(strtolower($produto->unidade), $unidadesPeso)) {
+                throw new \Exception('Este produto não é vendido por peso. Use a função de quantidade.');
+            }
+            
+            // Calculate the difference in value
+            $pesoAnterior = $item->qtde;
+            $diferencaPeso = $novoPeso - $pesoAnterior;
+            $diferencaValor = $produto->valor_unitario * $diferencaPeso;
+            
+            // Update the item weight (stored in qtde field)
+            $item->update(['qtde' => $novoPeso]);
+            
+            // Update the sale total
+            $venda->update([
+                'valor_total' => round($venda->valor_total + $diferencaValor, 2)
+            ]);
+
+            DB::commit();
+            
+            return response()->json([
+                'success' => true, 
+                'message' => 'Peso atualizado com sucesso',
+                'novo_peso' => $novoPeso,
+                'valor_item' => round($produto->valor_unitario * $novoPeso, 2),
+                'valor_total_venda' => round($venda->valor_total, 2)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Erro ao atualizar peso: ' . $e->getMessage()], 422);
+        }
+    }
+
     private function imprimeCupom() {
         // Integração com hardware (se aplicável)
         return app('App\Http\Controllers\Ponk\HardwareController')->imprimeCupomFiscal();
