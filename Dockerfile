@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Instala dependências do sistema
+# Instala dependências do sistema e Node.js 18
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,30 +11,32 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpq-dev \
     libzip-dev \
-    npm \
-    nodejs \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    gnupg \
+    ca-certificates \
+    && docker-php-ext-install pdo pdo_pgsql zip \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
-# Instala o Composer
+# Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Define o diretório de trabalho
+# Define diretório de trabalho
 WORKDIR /var/www
 
-# Copia os arquivos para dentro do container
+# Copia o projeto para dentro do container
 COPY . .
 
 # Instala dependências do PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Instala dependências do Node e compila assets
+# Instala dependências do Node e compila frontend
 RUN npm install && npm run build
 
-# Gera a chave da aplicação (você pode fazer isso no Render se quiser também)
-RUN php artisan key:generate
+# Permissões necessárias
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Define a porta usada
+# Expõe a porta
 EXPOSE 8000
 
-# Comando para iniciar o servidor
+# Start do servidor Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
