@@ -55,9 +55,12 @@ export default function StatusCaixa({
         switch (type) {
             case 'abrir': {
                 router.post('/statusCaixa/acoes/abrir');
+                window.location.reload();
                 break;
             }
             case 'fechar': {
+                router.post('/statusCaixa/acoes/fechar');
+                window.location.reload();
                 break;
             }
             default: {
@@ -111,11 +114,7 @@ export default function StatusCaixa({
                                 </div>
 
                                 <div className="valor-status">
-                                    <h2>
-                                        {aberto === 'cartao_credito'
-                                            ? 'ABERTO'
-                                            : 'FECHADO'}
-                                    </h2>
+                                    <h2>{aberto ? 'ABERTO' : 'FECHADO'}</h2>
                                 </div>
 
                                 <div className="subtitulo-status">
