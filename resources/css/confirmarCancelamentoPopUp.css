@@ -1,0 +1,176 @@
+/* Overlay do modal */
+.confirmar-cancelamento-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Container principal do modal */
+.confirmar-cancelamento-popup-container {
+    background: #003254;
+    border-radius: 18px;
+    padding: 32px;
+    min-width: 450px;
+    max-width: 550px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Título do modal */
+.confirmar-cancelamento-popup-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+/* Conteúdo principal */
+.confirmar-cancelamento-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+/* Mensagem de confirmação */
+.confirmar-cancelamento-popup-message {
+    font-size: 18px;
+    color: white;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 400px;
+}
+
+/* Ícone de aviso */
+.confirmar-cancelamento-popup-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 50%;
+    border: 3px solid #dc3545;
+}
+
+.confirmar-cancelamento-popup-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+/* Container dos botões */
+.confirmar-cancelamento-popup-buttons {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Estilo base dos botões */
+.confirmar-cancelamento-popup-button {
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirmar-cancelamento-popup-button:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.3);
+    outline-offset: 2px;
+}
+
+/* Botão de cancelar (não executar a ação) */
+.confirmar-cancelamento-popup-button-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.confirmar-cancelamento-popup-button-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Botão de confirmar (executar a ação perigosa) */
+.confirmar-cancelamento-popup-button-confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.confirmar-cancelamento-popup-button-confirm:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Animação de entrada */
+.confirmar-cancelamento-popup-container {
+    animation: confirmarCancelamentoPopupFadeIn 0.2s ease-out;
+}
+
+@keyframes confirmarCancelamentoPopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .confirmar-cancelamento-popup-container {
+        min-width: 320px;
+        margin: 20px;
+        padding: 24px;
+    }
+    
+    .confirmar-cancelamento-popup-title {
+        font-size: 20px;
+    }
+    
+    .confirmar-cancelamento-popup-message {
+        font-size: 16px;
+    }
+    
+    .confirmar-cancelamento-popup-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .confirmar-cancelamento-popup-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .confirmar-cancelamento-popup-buttons {
+        flex-direction: column;
+    }
+    
+    .confirmar-cancelamento-popup-button {
+        height: 44px;
+        font-size: 14px;
+        min-width: 120px;
+    }
+}
