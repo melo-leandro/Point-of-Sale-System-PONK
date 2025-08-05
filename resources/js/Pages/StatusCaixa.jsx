@@ -6,7 +6,13 @@ import { useEffect, useState } from 'react';
 
 import '../../css/statusCaixa.css';
 
-export default function StatusCaixa({ vendas, user, caixa_numeracao, aberto }) {
+export default function StatusCaixa({
+    vendas,
+    user,
+    caixa_numeracao,
+    aberto,
+    statusAlteradoData,
+}) {
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
@@ -65,30 +71,20 @@ export default function StatusCaixa({ vendas, user, caixa_numeracao, aberto }) {
             switch (event.key) {
                 case 'F1':
                     event.preventDefault();
-
                     handleMenuClick('inicio');
-
                     break;
-
                 case 'F2':
                     event.preventDefault();
-
                     handleEvent('abrir');
-
                     break;
-
                 case 'F6':
                     event.preventDefault();
-
                     handleEvent('fechar');
-
                     break;
 
                 case 'F5':
                     event.preventDefault();
-
                     window.location.reload();
-
                     break;
             }
         };
@@ -123,7 +119,21 @@ export default function StatusCaixa({ vendas, user, caixa_numeracao, aberto }) {
                                 </div>
 
                                 <div className="subtitulo-status">
-                                    <h2>aberto na hora tal e no dia tal</h2>
+                                    <h2>
+                                        {new Date(
+                                            statusAlteradoData,
+                                        ).toLocaleString('pt-BR', {
+                                            day: '2-digit',
+
+                                            month: '2-digit',
+
+                                            year: 'numeric',
+
+                                            hour: '2-digit',
+
+                                            minute: '2-digit',
+                                        })}
+                                    </h2>
                                 </div>
                             </div>
 

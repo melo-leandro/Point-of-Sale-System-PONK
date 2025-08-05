@@ -32,6 +32,7 @@ class StatusCaixaController extends Controller
             'user' => $user,
             'vendas' => $vendas,
             'caixa_numeracao' => $caixa->numeracao,
+            'statusAlteradoData' => $caixa->status_alterado_em,
             'aberto' => $caixa->aberto,
         ]);
     }
