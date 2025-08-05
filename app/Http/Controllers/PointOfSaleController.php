@@ -51,6 +51,7 @@ class PointOfSaleController extends Controller
             'finalizar' => app('App\Http\Controllers\Ponk\VendaController')->finalizarVenda($request),
             'nova-quantidade' => app('App\Http\Controllers\Ponk\VendaController')->atualizaQuantidade($request),
             'novo-peso' => app('App\Http\Controllers\Ponk\VendaController')->atualizaPeso($request),
+            'validar-gerente' => app('App\Http\Controllers\Ponk\VendaController')->validarPinGerente($request),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }
