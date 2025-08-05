@@ -54,8 +54,29 @@ export default function StatusCaixa({
     const handleEvent = (type) => {
         switch (type) {
             case 'abrir': {
-                router.post('/statusCaixa/acoes/abrir');
-                window.location.reload();
+                const saldoInicial = prompt(
+                    'Digite o saldo inicial do caixa:',
+                    '0.00',
+                );
+
+                if (saldoInicial !== null) {
+                    // Valida se é um número válido
+                    const saldoNumerico = parseFloat(
+                        saldoInicial.replace(',', '.'),
+                    );
+
+                    if (isNaN(saldoNumerico) || saldoNumerico < 0) {
+                        alert(
+                            'Por favor, digite um valor válido para o saldo inicial.',
+                        );
+                        return;
+                    }
+
+                    router.post('/statusCaixa/acoes/abrir', {
+                        saldo_inicial: saldoNumerico.toFixed(2),
+                    });
+                    window.location.reload();
+                }
                 break;
             }
             case 'fechar': {

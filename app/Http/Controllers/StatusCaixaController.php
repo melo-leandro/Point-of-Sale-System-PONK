@@ -39,7 +39,7 @@ class StatusCaixaController extends Controller
     public function acoesCaixa(Request $request, $acao)
     {
         return match ($acao) {
-            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir(),
+            'abrir' => app('App\Http\Controllers\Ponk\CaixaController')->abrir($request),
             'fechar' => app('App\Http\Controllers\Ponk\CaixaController')->fechar(),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
