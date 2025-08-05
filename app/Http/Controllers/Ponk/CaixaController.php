@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ponk;
 
 use App\Http\Requests\CaixaRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use App\Models\Caixa;
+use App\Http\Controllers\Controller;
 
 class CaixaController extends Controller
 {
