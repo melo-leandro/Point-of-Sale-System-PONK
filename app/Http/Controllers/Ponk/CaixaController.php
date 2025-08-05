@@ -8,14 +8,35 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Caixa;
 use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 
 class CaixaController extends Controller
 {
     public function index() {
         $caixas = Caixa::all();
-        return view('caixas.index', compact('caixas'));
+        return Inertia::render('Caixas/Index', [
+            'caixas' => $caixas
+        ]);
     }
 
+    public function show($numeracao = null) {
+        $user = auth()->user();
+        
+        if ($numeracao) {
+            $caixa = Caixa::where('numeracao', $numeracao)->first();
+        } else {
+            $caixa = Caixa::where('user_id', $user->id)->first();
+        }
+        
+        if (!$caixa) {
+            return redirect()->route('caixas.index')->with('error', 'Caixa não encontrado');
+        }
+        
+        return Inertia::render('Caixas/Show', [
+            'caixa' => $caixa,
+            'user' => $user
+        ]);
+    }
     
     public function store(CaixaRequest $request) {
         Caixa::create($request->all());

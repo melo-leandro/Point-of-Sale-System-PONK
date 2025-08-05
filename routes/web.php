@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Ponk\VendaController;
+use App\Http\Controllers\Ponk\CaixaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PointOfSaleController;
 use App\Http\Controllers\StatusCaixaController;
@@ -54,6 +55,10 @@ Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
 Route::post('/vendas', [VendaController::class, 'store'])
     ->middleware(['auth', 'verified'])
     ->name('vendas.store');
+
+Route::get('/caixas', [CaixaController::class, 'index'])->name('caixas.index');
+
+Route::get('/caixas/{numeracao}', [CaixaController::class, 'show'])->name('caixa.show');
 
 Route::post('/vendas/adicionar-item', [VendaController::class, 'adicionarItem'])
     ->middleware(['auth', 'verified'])
