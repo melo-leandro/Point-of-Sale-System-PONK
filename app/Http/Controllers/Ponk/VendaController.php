@@ -34,7 +34,12 @@ class VendaController extends Controller
         
         $venda = Venda::create($dadosVenda);
         
-        // Se for uma requisição AJAX (do React), retorna JSON
+        // Para requisições Inertia (vindas do Point of Sale), redireciona de volta com os dados atualizados
+        if ($request->header('X-Inertia')) {
+            return redirect()->back()->with('success', 'Venda criada com sucesso');
+        }
+        
+        // Se for uma requisição AJAX tradicional, retorna JSON
         if ($request->expectsJson()) {
             return response()->json(['venda' => $venda]);
         }
@@ -59,23 +64,27 @@ class VendaController extends Controller
             ], 422);
         }
 
-        $itens = $venda->itens()->with('produto')->get();
-        
-        // Garante que os valores sejam retornados como números
-        $itensFormatados = $itens->map(function ($item) {
-            return [
-                'id_item' => $item->id_item,
-                'produto_id' => $item->produto_id,
-                'qtde' => (float) $item->qtde,
-                'venda_id' => $item->venda_id,
-                'created_at' => $item->created_at,
-                'updated_at' => $item->updated_at,
-            ];
-        });
-        
-        $produtosFormatados = $itens->map(function ($item) {
-            $produto = $item->produto;
-            if ($produto) {
+        try {
+            // Get items without eager loading first to avoid relationship errors
+            $itens = $venda->itens()->get();
+            
+            // Garante que os valores sejam retornados como números
+            $itensFormatados = $itens->map(function ($item) {
+                return [
+                    'id_item' => $item->id_item,
+                    'produto_id' => $item->produto_id,
+                    'qtde' => (float) $item->qtde,
+                    'venda_id' => $item->venda_id,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                ];
+            });
+            
+            // Get products separately to handle any data type issues
+            $produtoIds = $itens->pluck('produto_id')->filter()->unique();
+            $produtos = \App\Models\Produto::whereIn('codigo', $produtoIds)->get();
+            
+            $produtosFormatados = $produtos->map(function ($produto) {
                 return [
                     'codigo' => $produto->codigo,
                     'nome' => $produto->nome,
@@ -84,15 +93,26 @@ class VendaController extends Controller
                     'created_at' => $produto->created_at,
                     'updated_at' => $produto->updated_at,
                 ];
-            }
-            return null;
-        })->filter();
+            });
 
-        return response()->json([
-            'success' => true,
-            'itens' => $itensFormatados,
-            'produtos' => $produtosFormatados
-        ]);
+            return response()->json([
+                'success' => true,
+                'itens' => $itensFormatados,
+                'produtos' => $produtosFormatados
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Erro ao carregar itens da venda:', [
+                'venda_id' => $vendaId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar itens da venda'
+            ], 500);
+        }
     }
 
     public function adicionarItem(Request $request) {

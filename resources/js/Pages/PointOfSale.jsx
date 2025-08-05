@@ -27,27 +27,20 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     const vendaAtual = vendas && vendas.find(v => v.status === 'pendente' && v.caixa_id === caixa_id);
     
     // Função para carregar itens da venda
-    const carregarItensVenda = () => {
+    const carregarItensVenda = async () => {
         if (vendaAtual && vendaAtual.id) {
-            fetch('/pointOfSale/acoes/itens-adicionados', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({
-                    venda_id: vendaAtual.id
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
+            try {
+                const response = await fetch(`/pointOfSale/acoes/itens-adicionados?venda_id=${vendaAtual.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
                     setItens(data.itens || []);
                     setProdutos(data.produtos || []);
                     
@@ -63,16 +56,15 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                     }, 0);
                     setValorTotal(total);
                 } else {
-                    console.error('Erro na resposta:', data.message);
+                    console.error('Erro ao carregar itens:', data);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Erro ao carregar itens:', error);
-            });
+            }
         }
     };
     
-        // Cria uma venda automaticamente ao entrar na página se não houver venda pendente
+    // Cria uma venda automaticamente ao entrar na página se não houver venda pendente
     useEffect(() => {
         if (!vendaAtual && !tentouCriar) {
             setTentouCriar(true);
@@ -84,12 +76,9 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                 caixa_id: caixa_id
             }, {
                 preserveScroll: true,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
                 onSuccess: (response) => {
                     setLoadingVenda(false);
+                    // O Inertia vai automaticamente atualizar os props com a nova venda
                 },
                 onError: (errors) => {
                     console.error('Erro ao criar venda:', errors);
