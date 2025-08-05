@@ -1,13 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import QuantidadePopUp from '@/Components/QuantidadePopUp';
 
-export default function CodigoOrDesconto({ state, vendaAtual, onItemAdded, produtos }) {
+export default function CodigoOrDesconto({ state, vendaAtual, recarregaItensAdicionados, produtos }) {
 
     const [codigo, setCodigo] = useState('');
     const [loading, setLoading] = useState(false);
     const [mostrarModalQuantidade, setMostrarModalQuantidade] = useState(false);
     const [produtoParaModal, setProdutoParaModal] = useState(null);
     const [resolveQuantidade, setResolveQuantidade] = useState(null);
+
+        useEffect(() => {
+        const handleKeyDown = (event) => {
+            if(event.key === 'F1') {
+                event.preventDefault();
+                document.getElementById('input-codigo-produto').focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
+    }, [autoFocus]);
+
 
     const adicionarItem = async () => {
         if (!codigo.trim() || !vendaAtual?.id || loading) return;
@@ -25,7 +38,6 @@ export default function CodigoOrDesconto({ state, vendaAtual, onItemAdded, produ
         let quantidade = 1;
 
         if (produtoItem.unidade === 'KG') {
-            // Mostrar modal e aguardar resposta
             setProdutoParaModal(produtoItem);
             setMostrarModalQuantidade(true);
             
@@ -59,7 +71,7 @@ export default function CodigoOrDesconto({ state, vendaAtual, onItemAdded, produ
             if (response.ok && data.success) {
                 console.log('Item adicionado com sucesso:', data);
                 setCodigo('');
-                onItemAdded?.();
+                recarregaItensAdicionados();
             } else {
                 console.error('Erro ao adicionar item:', data);
                 alert(data.message || 'Erro ao adicionar item. Verifique se o código está correto.');
@@ -104,15 +116,20 @@ export default function CodigoOrDesconto({ state, vendaAtual, onItemAdded, produ
                     <div className="titulo-cartao">Código do produto</div>
                         <div className="cartao-input-wrapper">
                             <input
-                                placeholder={loading ? "Adicionando item..." : "Insira o código desejado..."}
+                                id="input-codigo-produto"
+                                placeholder={loading ? "Adicionando item..." : "F1 - Insira o código desejado..."}
                                 value={codigo}
                                 onChange={e => setCodigo(e.target.value)}
+                                autoFocus
                                 onKeyDown={handleCodigoKeyDown}
                                 disabled={loading}
                                 style={{
                                     opacity: loading ? 0.6 : 1,
                                     cursor: loading ? 'not-allowed' : 'text'
                                 }}
+                                maxLength={13}
+                                inputMode="integer"
+                                pattern="[0-9]*"
                             />
                     </div>
                 </div>
@@ -124,7 +141,6 @@ export default function CodigoOrDesconto({ state, vendaAtual, onItemAdded, produ
                         aoConfirmar={handleConfirmarQuantidade}
                         aoFechar={handleFecharModal}
                         valorInicial={'1'}
-                        titulo={`Insira o peso do produto ${produtoParaModal.nome}:`}
                     />
                 )}
             </>
