@@ -54,5 +54,15 @@ class User extends Authenticatable
                substr($this->cpf, 3, 3) . '.' . 
                substr($this->cpf, 6, 3) . '-' . 
                substr($this->cpf, 9, 2);
-    }        
+    }
+
+    public function vendas()
+    {
+        return $this->hasMany(Venda::class, 'usuario_id');
+    }
+
+    public function caixa()
+    {
+        return $this->hasOne(Caixa::class, 'user_id');
+    }
 }
