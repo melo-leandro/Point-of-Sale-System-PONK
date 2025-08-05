@@ -1,0 +1,167 @@
+/* Overlay do modal */
+.pin-gerente-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Container principal do modal */
+.pin-gerente-popup-container {
+    background: #003254;
+    border-radius: 18px;
+    padding: 32px;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Título do modal */
+.pin-gerente-popup-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+/* Input do PIN */
+.pin-gerente-popup-input {
+    width: 100%;
+    height: 56px;
+    border: 3px solid #003254;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 8px;
+    padding: 0 16px;
+    background: #f8f9fa;
+    color: #003254;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.pin-gerente-popup-input:focus {
+    border-color: #0056b3;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+.pin-gerente-popup-input::placeholder {
+    color: #6c757d;
+    font-size: 16px;
+    letter-spacing: normal;
+    font-weight: normal;
+}
+
+/* Remover botões de incremento/decremento do input number em navegadores webkit */
+.pin-gerente-popup-input::-webkit-outer-spin-button,
+.pin-gerente-popup-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Container dos botões */
+.pin-gerente-popup-buttons {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Botões */
+.pin-gerente-popup-button {
+    flex: 1;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão de cancelar */
+.pin-gerente-popup-button-cancel {
+    background: #dc3545;
+    color: white;
+}
+
+.pin-gerente-popup-button-cancel:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Botão de confirmar */
+.pin-gerente-popup-button-confirm {
+    background: #28a745;
+    color: white;
+}
+
+.pin-gerente-popup-button-confirm:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.pin-gerente-popup-button-confirm:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animação de entrada */
+.pin-gerente-popup-container {
+    animation: pinGerentePopupFadeIn 0.2s ease-out;
+}
+
+@keyframes pinGerentePopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .pin-gerente-popup-container {
+        min-width: 320px;
+        margin: 20px;
+        padding: 24px;
+    }
+    
+    .pin-gerente-popup-title {
+        font-size: 20px;
+    }
+    
+    .pin-gerente-popup-input {
+        height: 48px;
+        font-size: 20px;
+        letter-spacing: 6px;
+    }
+    
+    .pin-gerente-popup-buttons {
+        flex-direction: column;
+    }
+    
+    .pin-gerente-popup-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}

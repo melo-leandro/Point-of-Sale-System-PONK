@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class VendaController extends Controller
 {
@@ -80,10 +81,9 @@ class VendaController extends Controller
                 ];
             });
             
-            // Get products separately to handle any data type issues
-            $produtoIds = $itens->pluck('produto_id')->filter()->unique();
-            $produtos = \App\Models\Produto::whereIn('codigo', $produtoIds)->get();
-            
+            // Pega todos os produtos separadamente e retorna
+            $produtos = \App\Models\Produto::all();
+
             $produtosFormatados = $produtos->map(function ($produto) {
                 return [
                     'codigo' => $produto->codigo,
@@ -203,9 +203,15 @@ class VendaController extends Controller
                 throw new \Exception('Operação não pode ser concluida!');
             }
 
-            if (empty($request->pin)) {
-                return redirect()->back()
-                            ->with('error', 'Operação só pode ser realizada por um gerente!');
+
+            $encontrado = User::where('pin', $request->input('pin'))
+                ->whereNotNull('pin')
+                ->first();
+
+            if (!$encontrado || empty($request->input('pin'))) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Operação só pode ser realizada por um gerente!');
             }
 
             $item_id = $request->input('item_id');
@@ -526,6 +532,43 @@ class VendaController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Erro ao atualizar peso: ' . $e->getMessage()], 422);
+        }
+    }
+
+    public function validarPinGerente(Request $request) {
+        $request->validate([
+            'pin' => 'required|string|size:4'
+        ], [
+            'pin.required' => 'O PIN é obrigatório.',
+            'pin.size' => 'O PIN deve ter exatamente 4 caracteres.'
+        ]);
+
+        try {
+            $pin = $request->input('pin');
+            
+            // Se o usuário atual não tem PIN ou não confere, verifica outros usuários com permissão de gerente
+            $gerente = \App\Models\User::where('pin', $pin)
+                                      ->whereNotNull('pin')
+                                      ->first();
+
+            if ($gerente) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'PIN de gerente validado com sucesso',
+                    ]
+                );
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'PIN inválido ou usuário sem permissão de gerente'
+            ], 401);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao validar PIN: ' . $e->getMessage()
+            ], 422);
         }
     }
 

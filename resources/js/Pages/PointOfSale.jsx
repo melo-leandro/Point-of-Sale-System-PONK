@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
 import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 import QuantidadePopUp from '@/Components/QuantidadePopUp';
+import PinGerentePopUp from '@/Components/PinGerentePopUp';
+import RemoverItemPopUp from '@/Components/RemoverItemPopUp';
+import ConfirmarCancelamentoPopUp from '@/Components/ConfirmarCancelamentoPopUp';
 
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
