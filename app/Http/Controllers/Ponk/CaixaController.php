@@ -59,7 +59,12 @@ class CaixaController extends Controller
     }
 
     // Processa a abertura do caixa
-    public function abrir() {
+    public function abrir(Request $request) {
+
+        $validated = $request->validate([
+            'saldo_inicial' => 'required|numeric|min:0'
+        ]);
+
         try {
             DB::beginTransaction();
             $caixa = Caixa::where('user_id', Auth::id())->first();
