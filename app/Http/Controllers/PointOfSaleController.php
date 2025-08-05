@@ -36,13 +36,14 @@ class PointOfSaleController extends Controller
             'user' => $user,
             'caixa_id' => $caixa->numeracao,
             'caixa_status' => $caixa->aberto ? 'Aberto' : 'Fechado',    
-            'vendas' => $vendas,
+            'vendas' => $vendas
         ]);
     }
 
     public function acoesVenda(Request $request, $acao)
     {
         return match ($acao) {
+            'itens-adicionados' => app('App\Http\Controllers\Ponk\VendaController')->itensAdicionados($request),
             'adicionar-item' => app('App\Http\Controllers\Ponk\VendaController')->adicionarItem($request),
             'remover-item' => app('App\Http\Controllers\Ponk\VendaController')->removerItem($request),
             'aplicar-desconto' => app('App\Http\Controllers\Ponk\VendaController')->aplicarDesconto($request),

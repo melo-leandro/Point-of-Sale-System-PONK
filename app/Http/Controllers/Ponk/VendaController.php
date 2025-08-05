@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ponk;
 
 use App\Http\Requests\VendaRequest;
 use App\Http\Requests\ItemVendaRequest;
@@ -9,6 +9,8 @@ use App\Models\ItemVenda;
 use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class VendaController extends Controller
 {
@@ -18,7 +20,25 @@ class VendaController extends Controller
     }
 
     public function store(VendaRequest $request) {
-        Venda::create($request->all());
+        $dadosVenda = $request->all();
+        
+        // Define o usuário automaticamente se não foi enviado
+        if (!isset($dadosVenda['usuario_id'])) {
+            $dadosVenda['usuario_id'] = auth()->id();
+        }
+        
+        // Converte CPF vazio para null
+        if (isset($dadosVenda['cpf_cliente']) && $dadosVenda['cpf_cliente'] === '') {
+            $dadosVenda['cpf_cliente'] = null;
+        }
+        
+        $venda = Venda::create($dadosVenda);
+        
+        // Se for uma requisição AJAX (do React), retorna JSON
+        if ($request->expectsJson()) {
+            return response()->json(['venda' => $venda]);
+        }
+        
         return redirect()->route('vendas.index');
     }
 
@@ -27,50 +47,82 @@ class VendaController extends Controller
         return redirect()->route('vendas.index');
     }
 
+    public function itensAdicionados(Request $request) {
+        $vendaId = $request->input('venda_id');
+        $venda = Venda::findOrFail($vendaId);
+
+        
+        if ($venda->status !== 'pendente') {
+            return redirect()->back()
+                        ->with('error', 'Operação não pode ser concluida!');
+        }
+
+        $itens = $venda->itens()->get();
+        // pega o nome do produto a partir do item
+        $produtos = $itens->map(function ($item) {
+            return $item->produto;
+        });
+
+        return response()->json([
+            'itens' => $itens,
+            'produtos' => $produtos
+        ]);
+    }
+
     public function adicionarItem(Request $request) {
         $request->validate([
-            'produto_id' => 'required|integer|exists:produtos,id',
-            'qtde' => 'required|integer|min:1',
-            'id' => 'required|integer|exists:vendas,id'
+            'produto_id' => 'required|string|exists:produtos,codigo',
+            'qtde' => 'required|numeric|min:0.01',
+            'venda_id' => 'required|integer|exists:vendas,id'
         ]);
         
         try{
             DB::beginTransaction();
             
-            $itemVenda = new ItemVenda([
-                'produto_id' => $request->input('produto_id'),
-                'qtde' => $request->input('qtde')
-            ]);
-            
-            $id = $request->input('id');
-            $venda = Venda::findOrFail($id);
+            $venda_id = $request->input('venda_id');
+            $venda = Venda::findOrFail($venda_id);
 
-            if(!$venda) {
-                throw new \Exception('Venda não encontrada');
-            }
-            
-            if($venda->status !== 'pendente') {
+            if ($venda->status !== 'pendente') {
                 throw new \Exception('Operação não pode ser concluida!');
             }
             
-            $venda->itens()->save($itemVenda);
+            // Log dos dados que estão sendo enviados
+            \Log::info('Criando item com dados:', [
+                'produto_id' => $request->input('produto_id'),
+                'qtde' => $request->input('qtde'),
+                'venda_id' => $venda_id
+            ]);
+            
+            $itemVenda = ItemVenda::create([
+                'produto_id' => $request->input('produto_id'),
+                'qtde' => $request->input('qtde'),
+                'venda_id' => $venda_id
+            ]);
+            
+            \Log::info('Item criado:', ['item' => $itemVenda]);
 
-            $produto = Produto::find($itemVenda->produto_id);
-            if (!$produto) {
-                throw new \Exception('Produto não encontrado');
-            }
+            $produto = Produto::where('codigo', $itemVenda->produto_id)->firstOrFail();
             $valor = $produto->valor_unitario * $itemVenda->qtde;
+            
             $venda->update([
                 'valor_total' => $venda->valor_total + $valor
             ]);
             
             DB::commit();
             
-            return redirect()->route('vendas.show', $id);
+            return response()->json([
+                'success' => true,
+                'item' => $itemVenda,
+                'produto' => $produto,
+                'message' => 'Item adicionado com sucesso'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()
-                        ->with('error', 'Erro ao adicionar item: ' . $e->getMessage());
+            \Log::error('Erro ao adicionar item:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao adicionar item: ' . $e->getMessage()
+            ], 422);
         }
     }
 
@@ -78,7 +130,7 @@ class VendaController extends Controller
         $request->validate([
                 'pin' => 'required|string',
                 'venda_id' => 'required|integer|exists:vendas,id',
-                'item_id' => 'required|integer|exists:item_vendas,id'
+                'item_id' => 'required|integer|exists:itens_venda,id_item'
         ]);
         
         try{
@@ -102,17 +154,13 @@ class VendaController extends Controller
 
             $item_id = $request->input('item_id');
 
-            $item = $venda->itens()->where('id', $item_id)->firstOrFail();
+            $item = $venda->itens()->where('id_item', $item_id)->firstOrFail();
 
             if (!$item) {
                 throw new \Exception('Item não encontrado na venda');
             }
 
-            $produto = Produto::find($item->produto_id);
-
-            if (!$produto) {
-                throw new \Exception('Produto não encontrado');
-            }
+            $produto = Produto::where('codigo', $item->produto_id)->firstOrFail();
 
             $valor = $produto->valor_unitario * $item->qtde;
             $item->delete();
@@ -260,7 +308,7 @@ class VendaController extends Controller
     }
 
     public function finalizarVenda(Request $request) {
-        request->validate([
+        $request->validate([
             'id' => 'required|integer|exists:vendas,id'
         ]);
 

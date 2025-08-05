@@ -11,6 +11,7 @@ class ItemVenda extends Model
     use HasFactory;
     
     protected $table = 'itens_venda';
+    protected $primaryKey = 'id_item';
     
     protected $fillable = [
         'qtde',
@@ -35,21 +36,13 @@ class ItemVenda extends Model
             ]);
         }
 
-        if($value < 0) {
+        if($value <= 0) {
             throw ValidationException::withMessages([
-                'qtde' => 'A quantidade não pode ser negativa.'
+                'qtde' => 'A quantidade deve ser maior que zero.'
             ]);
         }
 
-        if ($this->produto_id && $this->produto) {
-            if ($this->produto->unidade === 'UN' && fmod($value, 1) !== 0.0) {
-                throw ValidationException::withMessages([
-                    'qtde' => 'Para produtos com unidade "UN", a quantidade deve ser um número inteiro.'
-                ]);
-            }
-
-            $this->attributes['qtde'] = $value;
-        }
+        $this->attributes['qtde'] = $value;
     }
 
     public function produto()

@@ -20,7 +20,7 @@ class VendaRequest extends FormRequest
                 'string',
                 'size:11',
                 function ($attribute, $value, $fail) {
-                    if (!$this->validarCPF($value)) {
+                    if (!empty($value) && !$this->validarCPF($value)) {
                         $fail('O CPF informado é inválido.');
                     }
                 }
@@ -45,7 +45,7 @@ class VendaRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $caixa = Caixa::where('numeracao', $value)->first();
                     
-                    if (!$caixa->esta_aberto) {
+                    if (!$caixa->aberto) {
                         $fail('O caixa selecionado está fechado');
                     }
                     
@@ -56,13 +56,8 @@ class VendaRequest extends FormRequest
             ],
 
             'usuario_id' => [
-                'required',
-                'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    if ($value !== auth()->id()) {
-                        $fail('O usuário selecionado deve ser o usuário autenticado.');
-                    }
-                }
+                'nullable',
+                'exists:users,id'
             ],
 
             'status' => [
