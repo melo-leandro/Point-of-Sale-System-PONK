@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
 import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
+import QuantidadePopUp from '@/Components/QuantidadePopUp';
 
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
@@ -23,6 +24,7 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     const [loadingVenda, setLoadingVenda] = useState(true);
     const [tentouCriar, setTentouCriar] = useState(false);
     const [countdown, setCountdown] = useState(5);
+    const [showQuantidadePopUp, setShowQuantidadePopUp] = useState(false);
 
     // Hook para redirecionamento automático com contador regressivo
     useEffect(() => {
@@ -136,7 +138,9 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                     break;
                 case 'F2':
                     event.preventDefault();
-                    // Implementar lógica para inserir quantidade/peso
+                    if (itens.length > 0) {
+                        setShowQuantidadePopUp(true);
+                    }
                     break;
                 case 'F3':
                     event.preventDefault();
@@ -147,15 +151,67 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
-    }, []);
-
-    if (loadingVenda) {
+    }, [itens]);    if (loadingVenda) {
         return (
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
                 <h2>Criando venda, aguarde...</h2>
             </div>
         );
     }
+
+    // Funções para o modal de quantidade
+    const handleQuantidadeConfirm = (novaQuantidade) => {
+        if (itens.length > 0) {
+            const ultimoItem = itens[itens.length - 1];
+            const produtoItem = produtos.find(p => p.codigo === ultimoItem.produto_id) || {};
+            if (produtoItem.unidade === 'UN') {
+                const json = JSON.stringify({
+                    nova_quantidade: novaQuantidade,
+                    venda_id: vendaAtual.id
+                });
+            }
+            else if (produtoItem.unidade === 'KG'){
+                const json = JSON.stringify({
+                    novo_peso: novaQuantidade,
+                    venda_id: vendaAtual.id
+                });
+            }
+            else {
+                console.error('Unidade não suportada:', produtoItem.unidade);
+                const json = null;
+                return;
+            }
+   
+            fetch(`/pointOfSale/acoes/${produtoItem.unidade == 'UN' ? 'nova-quantidade' : 'novo-peso'}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                },
+                body: json
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Quantidade alterada com sucesso:', data);
+                    carregarItensVenda(); // Recarrega os itens após a alteração
+                } else {
+                    console.error('Erro ao alterar quantidade:', data);
+                    alert(data.message || 'Erro ao alterar quantidade. Verifique se o código está correto.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao alterar quantidade:', error);
+                alert('Erro ao alterar quantidade. Verifique se o código está correto.');
+            });
+        }
+        setShowQuantidadePopUp(false);
+    };
+
+    const handleQuantidadeCancel = () => {
+        setShowQuantidadePopUp(false);
+    };
 
     return (
         <>
@@ -173,6 +229,7 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                 state={screenState}
                                 vendaAtual={vendaAtual}
                                 onItemAdded={carregarItensVenda}
+                                produtos={produtos}
                             />
 
                             <div className="cartao-escuro valor-unitario">
@@ -250,6 +307,15 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                     </div>
                 </div>
             </AuthenticatedLayout>
+            
+            {/* Modal de quantidade */}
+            <QuantidadePopUp
+                aparecendo={showQuantidadePopUp}
+                aoFechar={handleQuantidadeCancel}
+                aoConfirmar={handleQuantidadeConfirm}
+                valorInicial="1"
+                titulo="Insira a quantidade do último item:"
+            />
         </>
     );
 }
