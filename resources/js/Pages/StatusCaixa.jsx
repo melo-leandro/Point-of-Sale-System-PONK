@@ -104,6 +104,11 @@ export default function StatusCaixa({
                     event.preventDefault();
                     handleEvent('abrir');
                     break;
+
+                case 'F3':
+                    event.preventDefault();
+                    window.open(route('statusCaixa.pdf'), '_blank');
+                    break;
                 case 'F6':
                     event.preventDefault();
                     handleEvent('fechar');
