@@ -17,7 +17,7 @@ class UserObserver
                 'user_id' => $user->id,
                 'aberto' => true,
                 'saldo_inicial' => 0,
-                'status_alterado_em' => now()
+                'status_alterado_em' => now('GMT-3')
             ]);
 
             DB::commit();

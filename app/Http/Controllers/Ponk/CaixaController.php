@@ -56,7 +56,7 @@ class CaixaController extends Controller
             $caixa->update([
                 'aberto' => true,
                 'saldo_inicial' => $validated['saldo_inicial'],
-                'status_alterado_em' => now(),
+                'status_alterado_em' => now('GMT-3'),
             ]);
             
             DB::commit(); 
@@ -88,7 +88,7 @@ class CaixaController extends Controller
 
             $caixa->update([
                 'aberto' => false,
-                'status_alterado_em' => now()
+                'status_alterado_em' => now('GMT-3')
             ]);
 
             DB::commit();
