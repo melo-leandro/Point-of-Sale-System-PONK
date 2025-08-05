@@ -1,0 +1,98 @@
+/* Overlay do modal */
+.quantidade-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Container principal do modal */
+.quantidade-popup-container {
+    background-color: #003254;
+    border-radius: 18px;
+    padding: 30px;
+    min-width: 400px;
+    text-align: center;
+    color: white;
+}
+
+/* Título do modal */
+.quantidade-popup-titulo {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin: 0 0 20px 0;
+}
+
+/* Input de quantidade */
+.quantidade-popup-input {
+    width: 200px;
+    height: 60px;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 12px;
+    border: none;
+    background-color: white;
+    color: #003254;
+    margin-bottom: 20px;
+    -moz-appearance: textfield; /* Remove spin buttons in Firefox */
+    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+    appearance: none; /* Remove default styling in modern browsers */
+}
+
+/* Remove webkit spin buttons */
+.quantidade-popup-input::-webkit-outer-spin-button,
+.quantidade-popup-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Container dos botões */
+.quantidade-popup-botoes {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Botão base */
+.quantidade-popup-botao {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+}
+
+/* Botão confirmar */
+.quantidade-popup-botao-confirmar {
+    background-color: #28a745;
+}
+
+/* Botão cancelar */
+.quantidade-popup-botao-cancelar {
+    background-color: #dc3545;
+}
+
+/* Hover effects */
+.quantidade-popup-botao-confirmar:hover {
+    background-color: #218838;
+}
+
+.quantidade-popup-botao-cancelar:hover {
+    background-color: #c82333;
+}
+
+/* Focus effect para o input */
+.quantidade-popup-input:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
