@@ -1,13 +1,53 @@
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
 import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 
-export default function PointOfSale() {
 
-    const [state, setState] = useState('inputProdutos');
+export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
+    const [screenState, setScreenState] = useState('inputProdutos');
+    const [itens, setItens] = useState([]);
+    const [produtos, setProdutos] = useState([]);
+    const [valorTotal, setValorTotal] = useState(0);
+    const [loadingVenda, setLoadingVenda] = useState(true);
+    const [tentouCriar, setTentouCriar] = useState(false);
+
+    
+    const vendaAtual = vendas && vendas.find(v => v.status === 'pendente' && v.caixa_id === caixa_id);
+    
+        // Cria uma venda automaticamente ao entrar na página se não houver venda pendente
+    useEffect(() => {
+        if (!vendaAtual && !tentouCriar) {
+            setTentouCriar(true);
+            router.post('/vendas', {
+                cpf_cliente: null,
+                forma_pagamento: 'dinheiro',
+                valor_total: 0,
+                status: 'pendente',
+                caixa_id: caixa_id
+            }, {
+                preserveScroll: true,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                onSuccess: (response) => {
+                    setLoadingVenda(false);
+                },
+                onError: (errors) => {
+                    console.error('Erro ao criar venda:', errors);
+                    setLoadingVenda(false);
+                }
+            });
+        } else if (vendaAtual) {
+            setLoadingVenda(false);
+        }
+    }, [vendaAtual, caixa_id, tentouCriar, vendas]);
+
+    
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.key) {
@@ -30,6 +70,14 @@ export default function PointOfSale() {
         return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
     }, []);
 
+    if (loadingVenda) {
+        return (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+                <h2>Criando venda, aguarde...</h2>
+            </div>
+        );
+    }
+
     return (
         <>
             <Head title="Ponto de Venda" />
@@ -43,7 +91,8 @@ export default function PointOfSale() {
                         {/* Coluna lateral */}
                         <div className="barra-lateral">
                             <CodigoOrDesconto
-                                state={state}
+                                state={screenState}
+                                vendaAtual={vendaAtual}
                             />
 
                             <div className="cartao-escuro valor-unitario">
@@ -84,21 +133,19 @@ export default function PointOfSale() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Array.from({ length: 24 }).map(
-                                            (_, idx) => (
-                                                <tr key={idx}>
+                                        {itens.map((item, idx) => {
+                                            const produto = produtos[idx] || {};
+                                            return (
+                                                <tr key={item.id || idx}>
                                                     <td>{idx + 1}</td>
-                                                    <td>000{idx + 1}</td>
-                                                    <td>
-                                                        Produto Exemplo{' '}
-                                                        {idx + 1}
-                                                    </td>
-                                                    <td>1</td>
-                                                    <td>R$ 10,00</td>
-                                                    <td>R$ 10,00</td>
+                                                    <td>{item.produto_id}</td>
+                                                    <td>{produto.nome || ''}</td>
+                                                    <td>{item.qtde}</td>
+                                                    <td>R$ {produto.valor_unitario ? produto.valor_unitario.toFixed(2) : '0,00'}</td>
+                                                    <td>R$ {produto.valor_unitario && item.qtde ? (produto.valor_unitario * item.qtde).toFixed(2) : '0,00'}</td>
                                                 </tr>
-                                            ),
-                                        )}
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -107,7 +154,7 @@ export default function PointOfSale() {
                                     <h2>Valor total</h2>
                                 </div>
                                 <div className="valor">
-                                    <h2>R$ 0,00</h2>
+                                    <h2>R$ {valorTotal.toFixed(2)}</h2>
                                 </div>
                             </div>
                         </div>

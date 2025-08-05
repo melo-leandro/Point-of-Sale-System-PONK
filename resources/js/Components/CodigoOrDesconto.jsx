@@ -1,11 +1,18 @@
+import { router } from "@inertiajs/react";
+import { useState } from 'react';
 
+export default function CodigoOrDesconto({ state, vendaAtual }) {
 
-export default function CodigoOrDesconto({ state }) {
+    const [codigo, setCodigo] = useState('');
 
     const handleCodigoKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            
+            router.post(`/pointOfSale/acoes/adicionar-item`, {
+                produto_id: codigo,
+                qtde: 1,
+                id: vendaAtual.id
+            });
             console.log('Código digitado:', codigo);
         }
     };
