@@ -60,4 +60,14 @@ class Venda extends Model
     {
         return $this->hasMany(ItemVenda::class, 'venda_id', 'id');
     }
+
+    public function caixa()
+    {
+        return $this->belongsTo(Caixa::class, 'caixa_id', 'numeracao');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'usuario_id', 'id');
+    }
 }
