@@ -16,7 +16,8 @@ class UserObserver
             $caixa = Caixa::create([
                 'user_id' => $user->id,
                 'aberto' => true,
-                'saldo_inicial' => 0
+                'saldo_inicial' => 0,
+                'status_alterado_em' => now()
             ]);
 
             DB::commit();
