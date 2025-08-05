@@ -1,17 +1,14 @@
-
+import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
+import ConfirmarCancelamentoPopUp from '@/Components/ConfirmarCancelamentoPopUp';
+import PinGerentePopUp from '@/Components/PinGerentePopUp';
+import QuantidadePopUp from '@/Components/QuantidadePopUp';
+import RemoverItemPopUp from '@/Components/RemoverItemPopUp';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
-import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
-import QuantidadePopUp from '@/Components/QuantidadePopUp';
-import PinGerentePopUp from '@/Components/PinGerentePopUp';
-import RemoverItemPopUp from '@/Components/RemoverItemPopUp';
-import ConfirmarCancelamentoPopUp from '@/Components/ConfirmarCancelamentoPopUp';
-
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
-
     // Helper function to safely convert values to numbers
     const toNumber = (value) => {
         if (value === null || value === undefined || value === '') return 0;
@@ -21,10 +18,9 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     };
 
     const produtoDoItem = (item) => {
-        return produtos.find(p => p.codigo === item.produto_id) || {};
+        return produtos.find((p) => p.codigo === item.produto_id) || {};
     };
 
-    
     const [screenState, setScreenState] = useState('inputProdutos');
     const [itens, setItens] = useState([]);
     const [produtos, setProdutos] = useState([]);
@@ -35,18 +31,20 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     const [showQuantidadePopUp, setShowQuantidadePopUp] = useState(false);
     const [showPinGerentePopUp, setShowPinGerentePopUp] = useState(false);
     const [showRemoverItemPopUp, setShowRemoverItemPopUp] = useState(false);
-    const [showConfirmarCancelamentoPopUp, setShowConfirmarCancelamentoPopUp] = useState(false);
+    const [showConfirmarCancelamentoPopUp, setShowConfirmarCancelamentoPopUp] =
+        useState(false);
     const [ultimoItem, setUltimoItem] = useState(null);
     const [totalUltimoItem, setTotalUltimoItem] = useState(0);
     const [pinRecebido, setPinRecebido] = useState('');
-    
+
     // Função generalizada para mapear item com dados calculados
     const mapearItemComDados = (item, idx) => {
-        const produto = produtos.find(p => p.codigo === item.produto_id) || {};
+        const produto =
+            produtos.find((p) => p.codigo === item.produto_id) || {};
         const valorUnitario = toNumber(produto.valor_unitario);
         const quantidade = toNumber(item.qtde);
         const total = valorUnitario * quantidade;
-        
+
         const formatarQuantidade = (qtd, unidade) => {
             if (unidade === 'UN') return qtd;
             return qtd < 1 ? qtd * 1000 + 'g' : qtd + 'kg';
@@ -59,9 +57,12 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
             valorUnitario,
             quantidade,
             total,
-            quantidadeFormatada: formatarQuantidade(quantidade, produto.unidade),
+            quantidadeFormatada: formatarQuantidade(
+                quantidade,
+                produto.unidade,
+            ),
             valorUnitarioFormatado: `R$ ${valorUnitario.toFixed(2).replace('.', ',')}`,
-            totalFormatado: `R$ ${total.toFixed(2).replace('.', ',')}`
+            totalFormatado: `R$ ${total.toFixed(2).replace('.', ',')}`,
         };
     };
 
@@ -89,57 +90,97 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     // Early return para caixa fechado
     if (!caixa_status || caixa_status !== 'Aberto') {
         return (
-            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center'}}>
-                <h2>Caixa fechado ou não disponível. Por favor, abra um caixa para continuar.</h2>
-                <p>Redirecionando para a página de caixas em {countdown} segundo{countdown !== 1 ? 's' : ''}...</p>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                    textAlign: 'center',
+                }}
+            >
+                <h2>
+                    Caixa fechado ou não disponível. Por favor, abra um caixa
+                    para continuar.
+                </h2>
+                <p>
+                    Redirecionando para a página de caixas em {countdown}{' '}
+                    segundo{countdown !== 1 ? 's' : ''}...
+                </p>
             </div>
         );
     }
 
-    const vendaAtual = vendas && vendas.find(v => v.status === 'pendente' && v.caixa_id === caixa_id);
-    
+    const vendaAtual =
+        vendas &&
+        vendas.find((v) => v.status === 'pendente' && v.caixa_id === caixa_id);
+
     // Função para carregar itens da venda
     const carregarItensVenda = async () => {
         if (vendaAtual && vendaAtual.id) {
             try {
-                const response = await fetch(`/pointOfSale/acoes/itens-adicionados?venda_id=${vendaAtual.id}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                    }
-                });
+                const response = await fetch(
+                    `/pointOfSale/acoes/itens-adicionados?venda_id=${vendaAtual.id}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            Accept: 'application/json',
+                        },
+                    },
+                );
 
                 const data = await response.json();
-                
+
                 if (response.ok && data.success) {
                     setItens(data.itens || []);
                     setProdutos(data.produtos || []);
-                    
+
                     const itensAtualizados = data.itens || [];
                     const produtosAtualizados = data.produtos || [];
-                    
+
                     // Define o último item
-                    const ultimoItemAtualizado = itensAtualizados.length > 0 ? itensAtualizados[itensAtualizados.length - 1] : null;
+                    const ultimoItemAtualizado =
+                        itensAtualizados.length > 0
+                            ? itensAtualizados[itensAtualizados.length - 1]
+                            : null;
                     setUltimoItem(ultimoItemAtualizado);
-                    
+
                     // Calcula o total do último item usando os dados atualizados
                     if (ultimoItemAtualizado) {
-                        const produtoUltimoItem = produtosAtualizados.find(p => p.codigo === ultimoItemAtualizado.produto_id) || {};
-                        const valorUnitarioUltimoItem = toNumber(produtoUltimoItem.valor_unitario);
-                        const quantidadeUltimoItem = toNumber(ultimoItemAtualizado.qtde);
-                        setTotalUltimoItem(valorUnitarioUltimoItem * quantidadeUltimoItem);
+                        const produtoUltimoItem =
+                            produtosAtualizados.find(
+                                (p) =>
+                                    p.codigo ===
+                                    ultimoItemAtualizado.produto_id,
+                            ) || {};
+                        const valorUnitarioUltimoItem = toNumber(
+                            produtoUltimoItem.valor_unitario,
+                        );
+                        const quantidadeUltimoItem = toNumber(
+                            ultimoItemAtualizado.qtde,
+                        );
+                        setTotalUltimoItem(
+                            valorUnitarioUltimoItem * quantidadeUltimoItem,
+                        );
                     } else {
                         setTotalUltimoItem(0);
                     }
 
                     // Calcula o valor total
                     const total = itensAtualizados.reduce((acc, item) => {
-                        const produto = produtosAtualizados.find(p => p.codigo === item.produto_id);
+                        const produto = produtosAtualizados.find(
+                            (p) => p.codigo === item.produto_id,
+                        );
                         if (produto && produto.valor_unitario) {
-                            const valorUnitario = toNumber(produto.valor_unitario);
+                            const valorUnitario = toNumber(
+                                produto.valor_unitario,
+                            );
                             const quantidade = toNumber(item.qtde);
-                            return acc + (valorUnitario * quantidade);
+                            return acc + valorUnitario * quantidade;
                         }
                         return acc;
                     }, 0);
@@ -152,28 +193,32 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
             }
         }
     };
-    
+
     // Cria uma venda automaticamente ao entrar na página se não houver venda pendente
     useEffect(() => {
         if (!vendaAtual && !tentouCriar) {
             setTentouCriar(true);
-            router.post('/vendas', {
-                cpf_cliente: null,
-                forma_pagamento: 'dinheiro',
-                valor_total: 0,
-                status: 'pendente',
-                caixa_id: caixa_id
-            }, {
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    setLoadingVenda(false);
-                    // O Inertia vai automaticamente atualizar os props com a nova venda
+            router.post(
+                '/vendas',
+                {
+                    cpf_cliente: null,
+                    forma_pagamento: 'dinheiro',
+                    valor_total: 0,
+                    status: 'pendente',
+                    caixa_id: caixa_id,
                 },
-                onError: (errors) => {
-                    console.error('Erro ao criar venda:', errors);
-                    setLoadingVenda(false);
-                }
-            });
+                {
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        setLoadingVenda(false);
+                        // O Inertia vai automaticamente atualizar os props com a nova venda
+                    },
+                    onError: (errors) => {
+                        console.error('Erro ao criar venda:', errors);
+                        setLoadingVenda(false);
+                    },
+                },
+            );
         } else if (vendaAtual) {
             setLoadingVenda(false);
             carregarItensVenda(); // Carrega os itens quando a venda estiver disponível
@@ -190,8 +235,11 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     // Atualiza o total do último item quando ultimoItem ou produtos mudam
     useEffect(() => {
         if (ultimoItem && produtos.length > 0) {
-            const produtoUltimoItem = produtos.find(p => p.codigo === ultimoItem.produto_id) || {};
-            const valorUnitarioUltimoItem = toNumber(produtoUltimoItem.valor_unitario);
+            const produtoUltimoItem =
+                produtos.find((p) => p.codigo === ultimoItem.produto_id) || {};
+            const valorUnitarioUltimoItem = toNumber(
+                produtoUltimoItem.valor_unitario,
+            );
             const quantidadeUltimoItem = toNumber(ultimoItem.qtde);
             setTotalUltimoItem(valorUnitarioUltimoItem * quantidadeUltimoItem);
         } else {
@@ -199,7 +247,6 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
         }
     }, [ultimoItem, produtos]);
 
-    
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.key) {
@@ -224,11 +271,18 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
-    }, [itens]);    
-    
+    }, [itens]);
+
     if (loadingVenda) {
         return (
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}
+            >
                 <h2>Criando venda, aguarde...</h2>
             </div>
         );
@@ -242,45 +296,53 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
             if (produtoItem.unidade === 'UN') {
                 json = JSON.stringify({
                     nova_quantidade: novaQuantidade,
-                    venda_id: vendaAtual.id
+                    venda_id: vendaAtual.id,
                 });
                 console.log('JSON para UN:', json);
-            }
-            else if (produtoItem.unidade === 'KG'){
+            } else if (produtoItem.unidade === 'KG') {
                 json = JSON.stringify({
                     novo_peso: novaQuantidade,
-                    venda_id: vendaAtual.id
+                    venda_id: vendaAtual.id,
                 });
                 console.log('JSON para KG:', json);
-            }
-            else {
+            } else {
                 console.error('JSON inválido, unidade não suportada:', json);
                 return;
             }
-   
-            fetch(`/pointOfSale/acoes/${produtoItem.unidade == 'UN' ? 'nova-quantidade' : 'novo-peso'}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json',
+
+            fetch(
+                `/pointOfSale/acoes/${produtoItem.unidade == 'UN' ? 'nova-quantidade' : 'novo-peso'}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content'),
+                        Accept: 'application/json',
+                    },
+                    body: json,
                 },
-                body: json
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Quantidade alterada com sucesso:', data);
-                    carregarItensVenda(); // Recarrega os itens após a alteração
-                } else {
-                    console.error('Erro ao alterar quantidade:', data);
-                    alert(data.message || 'Erro ao alterar quantidade. Verifique se o código está correto.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao alterar quantidade:', error);
-                alert('Erro ao alterar quantidade. Verifique se o código está correto.');
-            });
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        console.log('Quantidade alterada com sucesso:', data);
+                        carregarItensVenda(); // Recarrega os itens após a alteração
+                    } else {
+                        console.error('Erro ao alterar quantidade:', data);
+                        alert(
+                            data.message ||
+                                'Erro ao alterar quantidade. Verifique se o código está correto.',
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.error('Erro ao alterar quantidade:', error);
+                    alert(
+                        'Erro ao alterar quantidade. Verifique se o código está correto.',
+                    );
+                });
         }
         setShowQuantidadePopUp(false);
     };
@@ -294,13 +356,18 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
         setPinRecebido(pin);
         console.log('PIN digitado:', pin);
         try {
-            const response = await fetch(`/pointOfSale/acoes/validar-gerente?pin=${encodeURIComponent(pin)}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                }
-            });
+            const response = await fetch(
+                `/pointOfSale/acoes/validar-gerente?pin=${encodeURIComponent(pin)}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content'),
+                    },
+                },
+            );
             const data = await response.json();
             if (response.ok && data.success) {
                 console.log('Pin verificado com sucesso');
@@ -322,43 +389,53 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
     const handleRemoverItemConfirm = (id) => {
         console.log('ID do item a remover:', id);
-        router.post('/pointOfSale/acoes/remover-item', {
-            item_id: id,
-            pin: pinRecebido,
-            venda_id: vendaAtual.id
-        }, {
-            onSuccess: () => {
-                console.log('Item removido com sucesso');
-                setShowRemoverItemPopUp(false);
-                carregarItensVenda(); // Recarrega os itens após a remoção
+        router.post(
+            '/pointOfSale/acoes/remover-item',
+            {
+                item_id: id,
+                pin: pinRecebido,
+                venda_id: vendaAtual.id,
             },
-            onError: (errors) => {
-                console.error('Erro ao remover item:', errors);
-                alert('Erro ao remover item. Verifique se o ID está correto.');
-            }
-        });
+            {
+                onSuccess: () => {
+                    console.log('Item removido com sucesso');
+                    setShowRemoverItemPopUp(false);
+                    carregarItensVenda(); // Recarrega os itens após a remoção
+                },
+                onError: (errors) => {
+                    console.error('Erro ao remover item:', errors);
+                    alert(
+                        'Erro ao remover item. Verifique se o ID está correto.',
+                    );
+                },
+            },
+        );
     };
 
     const handleRemoverItemCancel = () => {
         setShowRemoverItemPopUp(false);
     };
-    
+
     const cancelarVenda = () => {
-        router.post('/pointOfSale/acoes/cancelar', {
-            venda_id: vendaAtual.id
-        }, {
-            onSuccess: () => {
-                console.log('Venda cancelada com sucesso');
-                setShowConfirmarCancelamentoPopUp(false);
-                // Redireciona para a criação de uma nova venda
-                router.visit('/pointOfSale');
+        router.post(
+            '/pointOfSale/acoes/cancelar',
+            {
+                venda_id: vendaAtual.id,
             },
-            onError: (errors) => {
-                console.error('Erro ao cancelar venda:', errors);
-                alert('Erro ao cancelar venda. Tente novamente.');
-                setShowConfirmarCancelamentoPopUp(false);
-            }
-        });
+            {
+                onSuccess: () => {
+                    console.log('Venda cancelada com sucesso');
+                    setShowConfirmarCancelamentoPopUp(false);
+                    // Redireciona para a criação de uma nova venda
+                    router.visit('/pointOfSale');
+                },
+                onError: (errors) => {
+                    console.error('Erro ao cancelar venda:', errors);
+                    alert('Erro ao cancelar venda. Tente novamente.');
+                    setShowConfirmarCancelamentoPopUp(false);
+                },
+            },
+        );
     };
 
     const handleConfirmarCancelamento = () => {
@@ -389,16 +466,35 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                             />
 
                             <div className="cartao-escuro valor-unitario">
-                                <div className="titulo-cartao">Valor unitário</div>
+                                <div className="titulo-cartao">
+                                    Valor unitário
+                                </div>
                                 <div className="valor-cartao">
-                                    <h2>R$ {ultimoItem ? toNumber(produtoDoItem(ultimoItem).valor_unitario).toFixed(2).replace('.', ',') : '0,00'}</h2>
+                                    <h2>
+                                        R${' '}
+                                        {ultimoItem
+                                            ? toNumber(
+                                                  produtoDoItem(ultimoItem)
+                                                      .valor_unitario,
+                                              )
+                                                  .toFixed(2)
+                                                  .replace('.', ',')
+                                            : '0,00'}
+                                    </h2>
                                 </div>
                             </div>
 
                             <div className="cartao-escuro total-item">
-                                <div className="titulo-cartao">Total do item</div>
+                                <div className="titulo-cartao">
+                                    Total do item
+                                </div>
                                 <div className="valor-cartao">
-                                    <h2>R$ {toNumber(totalUltimoItem).toFixed(2).replace('.', ',')}</h2>
+                                    <h2>
+                                        R${' '}
+                                        {toNumber(totalUltimoItem)
+                                            .toFixed(2)
+                                            .replace('.', ',')}
+                                    </h2>
                                 </div>
                             </div>
 
@@ -427,18 +523,56 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {itensComDados.length > 0 ? itensComDados.map((itemData, idx) => (
-                                            <tr key={itemData.id_item || idx}>
-                                                <td>{itemData.index}</td>
-                                                <td>{itemData.produto_id}</td>
-                                                <td>{itemData.produto.nome || 'Produto não encontrado'}</td>
-                                                <td>{itemData.quantidadeFormatada}</td>
-                                                <td>{itemData.valorUnitarioFormatado}</td>
-                                                <td>{itemData.totalFormatado}</td>
-                                            </tr>
-                                        )) : (
+                                        {itensComDados.length > 0 ? (
+                                            itensComDados.map(
+                                                (itemData, idx) => (
+                                                    <tr
+                                                        key={
+                                                            itemData.id_item ||
+                                                            idx
+                                                        }
+                                                    >
+                                                        <td>
+                                                            {itemData.index}
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                itemData.produto_id
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {itemData.produto
+                                                                .nome ||
+                                                                'Produto não encontrado'}
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                itemData.quantidadeFormatada
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                itemData.valorUnitarioFormatado
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                itemData.totalFormatado
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )
+                                        ) : (
                                             <tr>
-                                                <td colSpan="6" style={{textAlign: 'center', padding: '20px', color: '#666'}}>
+                                                <td
+                                                    colSpan="6"
+                                                    style={{
+                                                        textAlign: 'center',
+                                                        padding: '20px',
+                                                        color: '#666',
+                                                    }}
+                                                >
                                                     Nenhum item adicionado
                                                 </td>
                                             </tr>
@@ -451,18 +585,23 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                                     <h2>Valor total</h2>
                                 </div>
                                 <div className="valor">
-                                    <h2>R$ {toNumber(valorTotal).toFixed(2).replace('.', ',')}</h2>
+                                    <h2>
+                                        R${' '}
+                                        {toNumber(valorTotal)
+                                            .toFixed(2)
+                                            .replace('.', ',')}
+                                    </h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </AuthenticatedLayout>
-            
+
             {/* Modal de quantidade */}
             <QuantidadePopUp
                 aparecendo={showQuantidadePopUp}
-                tipoItem={ultimoItem ? (produtoDoItem(ultimoItem).unidade) : null}
+                tipoItem={ultimoItem ? produtoDoItem(ultimoItem).unidade : null}
                 aoFechar={handleQuantidadeCancel}
                 aoConfirmar={handleQuantidadeConfirm}
                 valorInicial="1"
