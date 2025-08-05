@@ -3,8 +3,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
@@ -14,40 +14,58 @@
 
 /* Container principal do modal */
 .quantidade-popup-container {
-    background-color: #003254;
+    background: #003254;
     border-radius: 18px;
-    padding: 30px;
+    padding: 32px;
     min-width: 400px;
-    text-align: center;
-    color: white;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
 }
 
 /* Título do modal */
 .quantidade-popup-titulo {
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 600;
-    margin-bottom: 20px;
-    margin: 0 0 20px 0;
+    color: white;
+    margin: 0;
+    text-align: center;
 }
 
 /* Input de quantidade */
 .quantidade-popup-input {
-    width: 200px;
-    height: 60px;
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
+    width: 100%;
+    height: 56px;
+    border: 3px solid #003254;
     border-radius: 12px;
-    border: none;
-    background-color: white;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 4px;
+    padding: 0 16px;
+    background: #f8f9fa;
     color: #003254;
-    margin-bottom: 20px;
-    -moz-appearance: textfield; /* Remove spin buttons in Firefox */
-    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
-    appearance: none; /* Remove default styling in modern browsers */
+    outline: none;
+    transition: all 0.2s ease;
 }
 
-/* Remove webkit spin buttons */
+.quantidade-popup-input:focus {
+    border-color: #0056b3;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+.quantidade-popup-input::placeholder {
+    color: #6c757d;
+    font-size: 16px;
+    letter-spacing: normal;
+    font-weight: normal;
+}
+
+/* Remover botões de incremento/decremento do input number em navegadores webkit */
 .quantidade-popup-input::-webkit-outer-spin-button,
 .quantidade-popup-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -57,42 +75,93 @@
 /* Container dos botões */
 .quantidade-popup-botoes {
     display: flex;
-    gap: 15px;
-    justify-content: center;
+    gap: 16px;
+    width: 100%;
 }
 
-/* Botão base */
+/* Botões */
 .quantidade-popup-botao {
+    flex: 1;
+    height: 48px;
     border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão de cancelar */
+.quantidade-popup-botao-cancelar {
+    background: #dc3545;
     color: white;
 }
 
-/* Botão confirmar */
-.quantidade-popup-botao-confirmar {
-    background-color: #28a745;
-}
-
-/* Botão cancelar */
-.quantidade-popup-botao-cancelar {
-    background-color: #dc3545;
-}
-
-/* Hover effects */
-.quantidade-popup-botao-confirmar:hover {
-    background-color: #218838;
-}
-
 .quantidade-popup-botao-cancelar:hover {
-    background-color: #c82333;
+    background: #c82333;
+    transform: translateY(-1px);
 }
 
-/* Focus effect para o input */
-.quantidade-popup-input:focus {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
+/* Botão de confirmar */
+.quantidade-popup-botao-confirmar {
+    background: #28a745;
+    color: white;
+}
+
+.quantidade-popup-botao-confirmar:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.quantidade-popup-botao-confirmar:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animação de entrada */
+.quantidade-popup-container {
+    animation: quantidadePopupFadeIn 0.2s ease-out;
+}
+
+@keyframes quantidadePopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .quantidade-popup-container {
+        min-width: 320px;
+        margin: 20px;
+        padding: 24px;
+    }
+    
+    .quantidade-popup-titulo {
+        font-size: 20px;
+    }
+    
+    .quantidade-popup-input {
+        height: 48px;
+        font-size: 20px;
+        letter-spacing: 3px;
+    }
+    
+    .quantidade-popup-botoes {
+        flex-direction: column;
+    }
+    
+    .quantidade-popup-botao {
+        height: 44px;
+        font-size: 14px;
+    }
 }

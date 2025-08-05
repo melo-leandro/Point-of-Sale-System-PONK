@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import '../../css/QuantidadePopUp.css';
+import '../../css/quantidadePopUp.css';
 
 export default function QuantidadePopUp({ 
     aparecendo, 
@@ -7,7 +7,7 @@ export default function QuantidadePopUp({
     aoFechar, 
     aoConfirmar, 
     valorInicial = '1',
-    titulo = 'Insira a quantidade do último item:' 
+    titulo = tipoItem === 'UN' ? 'Insira a quantidade do último item:' : 'Insira o peso do último item (em quilogramas):' 
 
 }) {
 
@@ -66,13 +66,13 @@ export default function QuantidadePopUp({
                         onClick={quandoConfirmar}
                         className="quantidade-popup-botao quantidade-popup-botao-confirmar"
                     >
-                        Confirmar
+                        Confirmar (ENTER)
                     </button>
                     <button
                         onClick={quandoCancelar}
                         className="quantidade-popup-botao quantidade-popup-botao-cancelar"
                     >
-                        Cancelar
+                        Cancelar (ESC)
                     </button>
                 </div>
             </div>
@@ -102,13 +102,13 @@ export default function QuantidadePopUp({
                         onClick={quandoConfirmar}
                         className="quantidade-popup-botao quantidade-popup-botao-confirmar"
                     >
-                        Confirmar
+                        Confirmar (ENTER)
                     </button>
                     <button
                         onClick={quandoCancelar}
                         className="quantidade-popup-botao quantidade-popup-botao-cancelar"
                     >
-                        Cancelar
+                        Cancelar (ESC)
                     </button>
                 </div>
             </div>
