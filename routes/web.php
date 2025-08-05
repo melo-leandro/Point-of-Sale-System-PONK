@@ -70,4 +70,8 @@ Route::post('/pointOfSale/acoes/{acao}', [PointOfSaleController::class, 'acoesVe
 Route::post('/statusCaixa/acoes/{acao}', [StatusCaixaController::class, 'acoesCaixa'])
     ->name('StatusCaixa.acoesCaixa');
 
+    Route::get('/statusCaixa/pdf', [StatusCaixaController::class, 'gerarPdf'])
+    ->name('statusCaixa.pdf');
+
+
 require __DIR__.'/auth.php';
