@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('caixas', function (Blueprint $table) {
             $table->id('numeracao');
             $table->timestamps();
-            $table->timestamp('aberto_em')->nullable()->comment('Data e hora em que o caixa foi aberto');
+            $table->timestamp('status_alterado_em')->nullable()->comment('Data e hora em que o estado do caixa foi alterado');
             $table->boolean('aberto')->default(true);
             $table->decimal('saldo_inicial', 10, 2)->default(0);
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict')->comment('ID do usuário associado ao caixa');

@@ -24,6 +24,16 @@ class CaixaRequest extends FormRequest
                 'required',
                 'decimal:10,2',
                 'min:0'
+            ],
+
+            'status_alterado_em' => [
+                'nullable',
+                'date'
+            ],
+
+            'user_id' => [
+                'required',
+                'exists:users,id'
             ]
         ];
     }
