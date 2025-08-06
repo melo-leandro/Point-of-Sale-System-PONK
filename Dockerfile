@@ -38,5 +38,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expõe a porta
 EXPOSE 8000
 
-# Start do servidor Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Torna o script executável
+RUN chmod +x /var/www/entrypoint.sh
+
+# Executa o entrypoint
+CMD ["./entrypoint.sh"]
