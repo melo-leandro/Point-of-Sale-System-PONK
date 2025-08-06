@@ -1,8 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import '../../css/PinGerentePopUp.css';
-import { normalizeModuleId } from 'vite/module-runner';
+import '@/Components/cssHotfix/PinGerentePopUp.css';
+import { useEffect, useRef, useState } from 'react';
 
-export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, titulo = "Insira o PIN do gerente:", objetivo }) {
+export default function PinGerentePopUp({
+    aparecendo,
+    aoConfirmar,
+    aoFechar,
+    titulo = 'Insira o PIN do gerente:',
+}) {
     const [pin, setPin] = useState('');
     const inputRef = useRef(null);
 
@@ -17,8 +21,8 @@ export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, tit
     }, [aparecendo]);
 
     const handleConfirm = () => {
-            aoConfirmar(pin, objetivo);
-            setPin('');
+        aoConfirmar(pin);
+        setPin('');
     };
 
     const handleCancel = () => {
@@ -49,7 +53,7 @@ export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, tit
         <div className="pin-gerente-popup-overlay">
             <div className="pin-gerente-popup-container">
                 <h2 className="pin-gerente-popup-title">{titulo}</h2>
-                
+
                 <input
                     ref={inputRef}
                     className="pin-gerente-popup-input"
@@ -59,15 +63,15 @@ export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, tit
                     placeholder="Digite o PIN (números apenas)"
                     maxLength={4}
                 />
-                
+
                 <div className="pin-gerente-popup-buttons">
-                    <button 
+                    <button
                         className="pin-gerente-popup-button pin-gerente-popup-button-cancel"
                         onClick={handleCancel}
                     >
                         Cancelar (ESC)
                     </button>
-                    <button 
+                    <button
                         className="pin-gerente-popup-button pin-gerente-popup-button-confirm"
                         onClick={handleConfirm}
                         disabled={!pin.trim()}
