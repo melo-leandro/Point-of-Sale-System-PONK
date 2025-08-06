@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import '../../../css/RemoverItemPopUp.css';
+import '../../css/RemoverItemPopUp.css';
 
 export default function RemoverItemPopUp({ 
             aparecendo, 
