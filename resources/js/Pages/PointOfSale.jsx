@@ -1,4 +1,3 @@
-import '@/../css/PointOfSale.css';
 import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
 import ConfirmarCancelamentoPopUp from '@/Components/ConfirmarCancelamentoPopUp';
 import PinGerentePopUp from '@/Components/PinGerentePopUp';
@@ -7,6 +6,7 @@ import RemoverItemPopUp from '@/Components/RemoverItemPopUp';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import '/resources/css/PointOfSale.css';
 
 export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     // Helper function to safely convert values to numbers
