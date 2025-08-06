@@ -10,4 +10,12 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+            host: 'https://ca8827377df8.ngrok-free.app',
+            protocol: 'wss',
+        }
+    },
 });

@@ -18,5 +18,7 @@ return [
 
     'supports_credentials' => true,
 
-    'allowed_origins_patterns' => ['/^https:\/\/.*\.ngrok\.io$/'],
+    'allowed_origins_patterns' => ['#^https://[a-zA-Z0-9-]+\.ngrok-free\.app$#'],
+
+    'allowed_origins' => ['https://ca8827377df8.ngrok-free.app'],
 ];
