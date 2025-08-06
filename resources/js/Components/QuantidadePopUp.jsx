@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import '../../css/quantidadePopUp.css';
+import '../../css/QuantidadePopUp.css';
 
 export default function QuantidadePopUp({
     aparecendo,
