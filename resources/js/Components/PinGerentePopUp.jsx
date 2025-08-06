@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import 'resources/css/PinGerentePopUp.css';
+import '@/Components/cssHotfix/PinGerentePopUp.css';
 
 export default function PinGerentePopUp({
     aparecendo,
