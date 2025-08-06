@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../css/confirmarCancelamentoPopUp.css';
+import '../../css/confirmarCancelamentoPopUp.css';
 
 const ConfirmarCancelamentoPopUp = ({ 
     aparecendo, 
