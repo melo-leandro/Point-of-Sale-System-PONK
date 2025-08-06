@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import './../../css/PinGerentePopUp.css';
+import '../../css/PinGerentePopUp.css';
 import { normalizeModuleId } from 'vite/module-runner';
 
 export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, titulo = "Insira o PIN do gerente:" }) {
