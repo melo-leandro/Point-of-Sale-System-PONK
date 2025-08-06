@@ -37,7 +37,7 @@
         "ziggy-js": "^2.5.3"
     },
     "files": [
-        "resources/css/*.css"
+        "resources/css/*.css",
         "resources/css/auth/*.css"
 
     ]
