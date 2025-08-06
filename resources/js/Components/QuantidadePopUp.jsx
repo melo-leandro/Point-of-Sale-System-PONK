@@ -1,18 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../../css/quantidadePopUp.css';
 
-export default function QuantidadePopUp({ 
-    aparecendo, 
+export default function QuantidadePopUp({
+    aparecendo,
     tipoItem,
-    aoFechar, 
-    aoConfirmar, 
+    aoFechar,
+    aoConfirmar,
     valorInicial = '1',
-    titulo = tipoItem === 'UN' ? 'Insira a quantidade do último item:' : 'Insira o peso do último item (em quilogramas):' 
-
+    titulo = tipoItem === 'UN'
+        ? 'Insira a quantidade do último item:'
+        : 'Insira o peso do último item (em quilogramas):',
 }) {
-
     const [quantidade, setQuantidade] = useState(valorInicial);
-    
+
     // Auto-seleciona o texto quando o modal abre
     const inputRef = useRef(null);
     useEffect(() => {
@@ -34,8 +34,6 @@ export default function QuantidadePopUp({
         setQuantidade(valorInicial);
     };
 
-
-
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             quandoConfirmar();
@@ -44,95 +42,89 @@ export default function QuantidadePopUp({
         }
     };
 
-    if( tipoItem === 'UN' ) {
-    return (
-        <div className="quantidade-popup-overlay">
-            <div className="quantidade-popup-container">
-                <h2 className="quantidade-popup-titulo">
-                    {titulo}
-                </h2>
-                
-                <input
-                    ref={inputRef}
-                    type="number"
-                    value={quantidade}
-                    onChange={(e) => setQuantidade(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="quantidade-popup-input"
-                />
-                
-                <div className="quantidade-popup-botoes">
-                    <button
-                        onClick={quandoConfirmar}
-                        className="quantidade-popup-botao quantidade-popup-botao-confirmar"
-                    >
-                        Confirmar (ENTER)
-                    </button>
+    if (tipoItem === 'UN') {
+        return (
+            <div className="quantidade-popup-overlay">
+                <div className="quantidade-popup-container">
+                    <h2 className="quantidade-popup-titulo">{titulo}</h2>
+
+                    <input
+                        ref={inputRef}
+                        type="number"
+                        value={quantidade}
+                        onChange={(e) => setQuantidade(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="quantidade-popup-input"
+                    />
+
+                    <div className="quantidade-popup-botoes">
+                        <button
+                            onClick={quandoConfirmar}
+                            className="quantidade-popup-botao quantidade-popup-botao-confirmar"
+                        >
+                            Confirmar (ENTER)
+                        </button>
+                        <button
+                            onClick={quandoCancelar}
+                            className="quantidade-popup-botao quantidade-popup-botao-cancelar"
+                        >
+                            Cancelar (ESC)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    } else if (tipoItem === 'KG') {
+        return (
+            <div className="quantidade-popup-overlay">
+                <div className="quantidade-popup-container">
+                    <h2 className="quantidade-popup-titulo">{titulo}</h2>
+
+                    <input
+                        ref={inputRef}
+                        type="number"
+                        step="0.001"
+                        value={quantidade}
+                        onChange={(e) => setQuantidade(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="quantidade-popup-input"
+                    />
+
+                    <div className="quantidade-popup-botoes">
+                        <button
+                            onClick={quandoConfirmar}
+                            className="quantidade-popup-botao quantidade-popup-botao-confirmar"
+                        >
+                            Confirmar (ENTER)
+                        </button>
+                        <button
+                            onClick={quandoCancelar}
+                            className="quantidade-popup-botao quantidade-popup-botao-cancelar"
+                        >
+                            Cancelar (ESC)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    } else {
+        return (
+            <div className="quantidade-popup-overlay">
+                <div className="quantidade-popup-container">
+                    <h2 className="quantidade-popup-titulo">
+                        Tipo de item inválido
+                    </h2>
+
+                    <p>O tipo de item deve ser 'UN' ou 'KG'.</p>
+
                     <button
                         onClick={quandoCancelar}
                         className="quantidade-popup-botao quantidade-popup-botao-cancelar"
                     >
-                        Cancelar (ESC)
+                        Fechar
                     </button>
                 </div>
             </div>
-        </div>
-    );
-    }
-    else if( tipoItem === 'KG' ) {
-        return (
-        <div className="quantidade-popup-overlay">
-            <div className="quantidade-popup-container">
-                <h2 className="quantidade-popup-titulo">
-                    {titulo}
-                </h2>
-                
-                <input
-                    ref={inputRef}
-                    type="number"
-                    step="0.001"
-                    value={quantidade}
-                    onChange={(e) => setQuantidade(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="quantidade-popup-input"
-                />
-                
-                <div className="quantidade-popup-botoes">
-                    <button
-                        onClick={quandoConfirmar}
-                        className="quantidade-popup-botao quantidade-popup-botao-confirmar"
-                    >
-                        Confirmar (ENTER)
-                    </button>
-                    <button
-                        onClick={quandoCancelar}
-                        className="quantidade-popup-botao quantidade-popup-botao-cancelar"
-                    >
-                        Cancelar (ESC)
-                    </button>
-                </div>
-            </div>
-        </div>
-    );  
-    }
-    else {
-        return (
-        <div className="quantidade-popup-overlay">
-            <div className="quantidade-popup-container">
-                <h2 className="quantidade-popup-titulo">
-                    Tipo de item inválido
-                </h2>
-                
-                <p>O tipo de item deve ser 'UN' ou 'KG'.</p>
-                
-                <button
-                    onClick={quandoCancelar}
-                    className="quantidade-popup-botao quantidade-popup-botao-cancelar"
-                >
-                    Fechar
-                </button>
-            </div>
-        </div>
-    );
+        );
     }
 }
