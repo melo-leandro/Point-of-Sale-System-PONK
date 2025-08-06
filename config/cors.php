@@ -18,4 +18,5 @@ return [
 
     'supports_credentials' => true,
 
+    'allowed_origins_patterns' => ['/^https:\/\/.*\.ngrok\.io$/'],
 ];
