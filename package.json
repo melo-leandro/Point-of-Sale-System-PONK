@@ -38,5 +38,7 @@
     },
     "files": [
         "resources/css/*.css"
+        "resources/css/auth/*.css"
+
     ]
 }
