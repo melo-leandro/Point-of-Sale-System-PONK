@@ -1,0 +1,215 @@
+/* Overlay do modal */
+.finalizar-venda-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Container principal do modal */
+.finalizar-venda-popup-container {
+    background: #003254;
+    border-radius: 18px;
+    padding: 32px;
+    min-width: 500px;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Título do modal */
+.finalizar-venda-popup-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+/* Resumo da venda */
+.finalizar-venda-resumo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.resumo-item.destaque {
+    font-size: 22px;
+    font-weight: 700;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.resumo-label {
+    color: #ccc;
+}
+
+.resumo-valor {
+    color: white;
+    font-weight: 600;
+}
+
+.resumo-valor.troco {
+    color: #4CAF50;
+}
+
+/* Pergunta de confirmação */
+.finalizar-venda-pergunta {
+    text-align: center;
+}
+
+.finalizar-venda-pergunta p {
+    font-size: 20px;
+    font-weight: 500;
+    color: white;
+    margin: 0;
+}
+
+/* Container dos botões */
+.finalizar-venda-popup-buttons {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Botões */
+.finalizar-venda-popup-button {
+    flex: 1;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão de cancelar */
+.finalizar-venda-popup-button-cancel {
+    background: #dc3545;
+    color: white;
+}
+
+.finalizar-venda-popup-button-cancel:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Botão de confirmar */
+.finalizar-venda-popup-button-confirm {
+    background: #28a745;
+    color: white;
+}
+
+.finalizar-venda-popup-button-confirm:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.finalizar-venda-popup-button-confirm:focus {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+/* Animação de entrada */
+.finalizar-venda-popup-container {
+    animation: finalizarVendaPopupFadeIn 0.2s ease-out;
+}
+
+@keyframes finalizarVendaPopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .finalizar-venda-popup-container {
+        min-width: 400px;
+        margin: 20px;
+        padding: 24px;
+    }
+    
+    .finalizar-venda-popup-title {
+        font-size: 24px;
+    }
+    
+    .resumo-item {
+        font-size: 16px;
+    }
+    
+    .resumo-item.destaque {
+        font-size: 20px;
+    }
+    
+    .finalizar-venda-pergunta p {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .finalizar-venda-popup-container {
+        min-width: 320px;
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .finalizar-venda-popup-title {
+        font-size: 20px;
+    }
+    
+    .finalizar-venda-resumo {
+        padding: 16px;
+    }
+    
+    .resumo-item {
+        font-size: 14px;
+    }
+    
+    .resumo-item.destaque {
+        font-size: 18px;
+    }
+    
+    .finalizar-venda-pergunta p {
+        font-size: 16px;
+    }
+    
+    .finalizar-venda-popup-buttons {
+        flex-direction: column;
+    }
+    
+    .finalizar-venda-popup-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}

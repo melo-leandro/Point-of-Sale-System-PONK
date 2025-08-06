@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model; 
+use Illuminate\Validation\ValidationException;
 class Venda extends Model
 {
     use HasFactory;
+    
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'cpf_cliente',
@@ -25,7 +28,7 @@ class Venda extends Model
             'valor_total' => 'decimal:2'
         ];
     }
-    
+
     // essa função não é da venda, é do caixa (nao faz sentido cada venda ter um saldo inicial) eu acho
     public function setSaldoInicialAttribute($value)
     {
@@ -54,6 +57,50 @@ class Venda extends Model
         }
 
         $this->attributes['status'] = $value;
+    }
+
+    public function setCpf_clienteAttribute($value)
+    {
+        // Se o valor for null ou vazio, permite (venda sem CPF)
+        if ($value === null || $value === '') {
+            $this->attributes['cpf_cliente'] = $value;
+            return;
+        }
+
+        $valido = true;
+        $cpf = preg_replace('/[^0-9]/', '', $value);
+
+        // Verifica se tem 11 dígitos
+        if (strlen($cpf) !== 11) {
+            $valido = false;
+        }
+
+        // Verifica se não são todos dígitos iguais
+        if (preg_match('/(\d)\1{10}/', $cpf)) {
+            $valido = false;
+        }
+        
+        // Validação dos dígitos verificadores
+        if ($valido) {
+            for ($t = 9; $t < 11; $t++) {
+                for ($d = 0, $c = 0; $c < $t; $c++) {
+                    $d += $cpf[$c] * (($t + 1) - $c);
+                }
+                $d = ((10 * $d) % 11) % 10;
+                if ($cpf[$c] != $d) {
+                    $valido = false;
+                    break;
+                }
+            }
+        }
+
+        if (!$valido) {
+            throw ValidationException::withMessages([
+                'cpf_cliente' => 'O CPF é inválido.'
+            ]);
+        }
+
+        $this->attributes['cpf_cliente'] = $value;
     }
 
     public function itens()

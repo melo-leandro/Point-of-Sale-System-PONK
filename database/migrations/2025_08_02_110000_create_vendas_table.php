@@ -14,6 +14,7 @@ return new class extends Migration
 
         Schema::create('vendas', function (Blueprint $table) {
             $table->id()->comment('Identificador único da venda');
+            
             $table->timestamps();
 
             $table->decimal('valor_total', 10, 2)->default(0);

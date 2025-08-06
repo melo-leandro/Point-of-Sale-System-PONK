@@ -1,0 +1,181 @@
+/* Overlay do modal */
+.valor-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Container principal do modal */
+.valor-popup-container {
+    background: #003254;
+    border-radius: 18px;
+    padding: 32px;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Título do modal */
+.valor-popup-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+/* Grupo do input */
+.valor-input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.valor-input-group label {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+/* Input do valor */
+.valor-popup-input {
+    width: 100%;
+    height: 56px;
+    border: 3px solid #003254;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+    padding: 0 16px;
+    background: #f8f9fa;
+    color: #003254;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.valor-popup-input:focus {
+    border-color: #0056b3;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+}
+
+.valor-popup-input::placeholder {
+    color: #6c757d;
+    font-size: 16px;
+    letter-spacing: normal;
+    font-weight: normal;
+}
+
+.valor-input-group small {
+    font-size: 12px;
+    color: #ccc;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Container dos botões */
+.valor-popup-buttons {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Botões */
+.valor-popup-button {
+    flex: 1;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão de cancelar */
+.valor-popup-button-cancel {
+    background: #dc3545;
+    color: white;
+}
+
+.valor-popup-button-cancel:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Botão de confirmar */
+.valor-popup-button-confirm {
+    background: #28a745;
+    color: white;
+}
+
+.valor-popup-button-confirm:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.valor-popup-button-confirm:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animação de entrada */
+.valor-popup-container {
+    animation: valorPopupFadeIn 0.2s ease-out;
+}
+
+@keyframes valorPopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .valor-popup-container {
+        min-width: 320px;
+        margin: 20px;
+        padding: 24px;
+    }
+    
+    .valor-popup-title {
+        font-size: 20px;
+    }
+    
+    .valor-popup-input {
+        height: 48px;
+        font-size: 20px;
+    }
+    
+    .valor-popup-buttons {
+        flex-direction: column;
+    }
+    
+    .valor-popup-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}

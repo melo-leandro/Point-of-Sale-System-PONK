@@ -1,4 +1,4 @@
-.painel-wrapper {
+.status-container-principal {
     width: 100vw;
 
     height: 100vh;
@@ -12,7 +12,7 @@
     align-items: center;
 }
 
-.painel-itens {
+.status-painel-conteudo {
     display: flex;
 
     max-width: 1400px;
@@ -41,7 +41,7 @@
 }
 
 @media screen and (min-height: 700px) {
-    .painel-itens {
+    .status-painel-conteudo {
         padding-top: 0px;
 
         padding-bottom: 60px;
@@ -50,7 +50,7 @@
 
 /* Coluna lateral */
 
-.barra-lateral {
+.status-barra-lateral {
     display: flex;
 
     flex: 1 1 300px;
@@ -76,7 +76,7 @@
 
 /* Cards azuis escuros */
 
-.cartao-escuro {
+.status-cartao-escuro {
     display: flex;
 
     flex-direction: column;
@@ -88,17 +88,17 @@
 
 /* Alturas específicas */
 
-.cartao-escuro.status {
+.status-cartao-escuro.status {
     min-height: 160px;
 }
 
-.cartao-escuro.terminal {
+.status-cartao-escuro.terminal {
     min-height: 110px;
 }
 
 /* Header interno de cada card */
 
-.cartao-escuro > .titulo-cartao {
+.status-cartao-escuro > .status-titulo-cartao {
     align-self: center;
 
     font-size: 28px;
@@ -108,15 +108,15 @@
     color: white;
 }
 
-.cartao-escuro.status > .titulo-cartao {
+.status-cartao-escuro.status > .status-titulo-cartao {
     padding: 10px 0 10px 0;
 }
 
-.cartao-escuro.terminal > .titulo-cartao {
+.status-cartao-escuro.terminal > .status-titulo-cartao {
     padding: 10px 0 4px 0;
 }
 
-.cartao-escuro.status > .valor-status {
+.status-cartao-escuro.status > .status-valor-status {
     display: flex;
 
     justify-content: center;
@@ -136,7 +136,7 @@
     color: white;
 }
 
-.cartao-escuro.status > .subtitulo-status {
+.status-cartao-escuro.status > .status-subtitulo-status {
     display: flex;
 
     justify-content: center;
@@ -158,7 +158,7 @@
 
 /* Valor unitário e total do item */
 
-.cartao-escuro.terminal .valor-cartao {
+.status-cartao-escuro.terminal .status-valor-cartao {
     display: flex;
 
     justify-content: center;
@@ -170,7 +170,7 @@
     margin-top: -8px;
 }
 
-.cartao-escuro.terminal .valor-cartao h2 {
+.status-cartao-escuro.terminal .status-valor-cartao h2 {
     font-size: 50px;
 
     font-weight: 600;
@@ -180,7 +180,7 @@
 
 /* Lista de atalhos (F1, F2...) */
 
-.cartao-atalhos {
+.status-cartao-atalhos {
     display: flex;
 
     height: 300px;
@@ -196,7 +196,7 @@
     padding: 8px;
 }
 
-.cartao-atalhos ul {
+.status-cartao-atalhos ul {
     margin: 0;
 
     padding: 0 0 0 16px;
@@ -204,7 +204,7 @@
     list-style: none;
 }
 
-.cartao-atalhos ul li {
+.status-cartao-atalhos ul li {
     font-size: 25px;
 
     font-weight: 600;
@@ -214,13 +214,13 @@
     margin-bottom: 2px;
 }
 
-.cartao-atalhos ul li:last-child {
+.status-cartao-atalhos ul li:last-child {
     margin-bottom: 0;
 }
 
 /* Coluna principal */
 
-.coluna-principal {
+.status-coluna-principal {
     width: 900px;
 
     height: 627px;
@@ -248,7 +248,7 @@
 
 /* Wrapper da tabela */
 
-.mov-wrapper {
+.status-mov-wrapper {
     display: flex;
 
     height: 100%;
@@ -270,15 +270,15 @@
 
 /* Scrollbar */
 
-.mov-wrapper::-webkit-scrollbar {
+.status-mov-wrapper::-webkit-scrollbar {
     width: 12px;
 }
 
-.mov-wrapper::-webkit-scrollbar-track {
+.status-mov-wrapper::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.mov-wrapper::-webkit-scrollbar-thumb {
+.status-mov-wrapper::-webkit-scrollbar-thumb {
     background: #003254;
 
     border-radius: 10px;
@@ -286,7 +286,7 @@
 
 /* Tabela de itens */
 
-.mov {
+.status-mov {
     font-family: Arial, Helvetica, sans-serif;
 
     border: 0px solid #ffffff;
@@ -308,8 +308,8 @@
     height: auto;
 }
 
-.mov td,
-.mov th {
+.status-mov td,
+.status-mov th {
     border: 0px solid #0076c4;
 
     padding: 4px 7px;
@@ -317,21 +317,21 @@
     width: 1%;
 }
 
-.mov tbody td {
+.status-mov tbody td {
     font-size: 13px;
 
     color: #000000;
 }
 
-.mov td:nth-child(even) {
+.status-mov td:nth-child(even) {
     background: #d0e4f5;
 }
 
-.mov thead {
+.status-mov thead {
     background: #003254;
 }
 
-.mov thead th {
+.status-mov thead th {
     font-size: 15px;
 
     font-weight: bold;
@@ -345,22 +345,6 @@
     width: 1%;
 }
 
-.mov thead th:first-child {
+.status-mov thead th:first-child {
     border-left: none;
-}
-
-.painel-wrapper {
-    width: 100vw;
-
-    height: 100vh;
-
-    overflow: hidden;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    position: relative;
 }

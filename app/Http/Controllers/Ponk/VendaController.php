@@ -98,7 +98,8 @@ class VendaController extends Controller
             return response()->json([
                 'success' => true,
                 'itens' => $itensFormatados,
-                'produtos' => $produtosFormatados
+                'produtos' => $produtosFormatados,
+                'novo_valor_total' => (float) $venda->valor_total,
             ]);
             
         } catch (\Exception $e) {
@@ -126,33 +127,102 @@ class VendaController extends Controller
             DB::beginTransaction();
             
             $venda_id = $request->input('venda_id');
-            $venda = Venda::findOrFail($venda_id);
+            $venda = Venda::find($venda_id);
+
+            // Verificações adicionais para garantir que a venda existe e está válida
+            if (!$venda) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Venda não encontrada. Por favor, aguarde alguns segundos e tente novamente.'
+                ], 404);
+            }
 
             if ($venda->status !== 'pendente') {
-                throw new \Exception('Operação não pode ser concluida!');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Operação não pode ser concluída! A venda não está em estado pendente.'
+                ], 422);
             }
             
             // Log dos dados que estão sendo enviados
-            \Log::info('Criando item com dados:', [
+            \Log::info('Adicionando item com dados:', [
                 'produto_id' => $request->input('produto_id'),
                 'qtde' => $request->input('qtde'),
-                'venda_id' => $venda_id
+                'venda_id' => $venda_id,
+                'venda_status' => $venda->status
             ]);
-            
-            $itemVenda = ItemVenda::create([
-                'produto_id' => $request->input('produto_id'),
-                'qtde' => $request->input('qtde'),
-                'venda_id' => $venda_id
-            ]);
-            
-            \Log::info('Item criado:', ['item' => $itemVenda]);
 
-            $produto = Produto::where('codigo', $itemVenda->produto_id)->firstOrFail();
-            $valor = $produto->valor_unitario * $itemVenda->qtde;
-            
-            $venda->update([
-                'valor_total' => $venda->valor_total + $valor
-            ]);
+            $produto_id = $request->input('produto_id');
+            $nova_qtde = $request->input('qtde');
+
+            // Buscar o produto para verificar a unidade
+            $produto = Produto::where('codigo', $produto_id)->firstOrFail();
+
+            // Para produtos em KG, sempre criar nova entrada (produtos pesáveis)
+            // Para produtos em UN, verificar se já existe e somar
+            $itemExistente = null;
+            if ($produto->unidade === 'UN') {
+                $itemExistente = ItemVenda::where('venda_id', $venda_id)
+                                         ->where('produto_id', $produto_id)
+                                         ->first();
+            }
+
+            if ($itemExistente) {
+                // Se o item já existe (apenas para produtos UN), somar a quantidade
+                $qtde_anterior = $itemExistente->qtde;
+                $qtde_nova = $qtde_anterior + $nova_qtde;
+                
+                $itemExistente->update(['qtde' => $qtde_nova]);
+                
+                \Log::info('Item existente atualizado:', [
+                    'item_id' => $itemExistente->id_item,
+                    'produto' => $produto->nome,
+                    'unidade' => $produto->unidade,
+                    'qtde_anterior' => $qtde_anterior,
+                    'qtde_adicionada' => $nova_qtde,
+                    'qtde_nova' => $qtde_nova
+                ]);
+
+                $itemVenda = $itemExistente;
+            } else {
+                // Se o item não existe ou é produto KG, criar um novo
+                $itemVenda = ItemVenda::create([
+                    'produto_id' => $produto_id,
+                    'qtde' => $nova_qtde,
+                    'venda_id' => $venda_id
+                ]);
+                
+                \Log::info('Novo item criado:', [
+                    'item' => $itemVenda,
+                    'produto' => $produto->nome,
+                    'unidade' => $produto->unidade,
+                    'motivo' => $produto->unidade === 'KG' ? 'produto_pesavel' : 'item_novo'
+                ]);
+            }
+
+            if ($itemExistente) {
+                // Se foi atualização, somar apenas o valor da quantidade adicional
+                $valor_adicional = $produto->valor_unitario * $nova_qtde;
+                $venda->update([
+                    'valor_total' => $venda->valor_total + $valor_adicional
+                ]);
+                
+                \Log::info('Valor da venda atualizado:', [
+                    'valor_adicional' => $valor_adicional,
+                    'novo_valor_total' => $venda->valor_total + $valor_adicional
+                ]);
+            } else {
+                // Se foi criação, calcular o valor total do item
+                $valor = $produto->valor_unitario * $itemVenda->qtde;
+                $venda->update([
+                    'valor_total' => $venda->valor_total + $valor
+                ]);
+                
+                \Log::info('Valor da venda atualizado:', [
+                    'valor_item' => $valor,
+                    'novo_valor_total' => $venda->valor_total + $valor
+                ]);
+            }
             
             DB::commit();
             
@@ -170,7 +240,14 @@ class VendaController extends Controller
                     'unidade' => $produto->unidade,
                     'valor_unitario' => (float) $produto->valor_unitario,
                 ],
-                'message' => 'Item adicionado com sucesso'
+                'action' => $itemExistente ? 'updated' : 'created',
+                'qtde_adicionada' => (float) $nova_qtde,
+                'message' => $itemExistente ? 
+                    "Quantidade do item '{$produto->nome}' atualizada para {$itemVenda->qtde} UN" : 
+                    ($produto->unidade === 'KG' ? 
+                        "Item '{$produto->nome}' adicionado ({$nova_qtde} kg)" :
+                        "Item '{$produto->nome}' adicionado com sucesso"
+                    )
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -252,8 +329,7 @@ class VendaController extends Controller
             DB::beginTransaction();
 
             $id = $request->input('id');
-            $venda = Venda::findOrFail($id);
-            $usuario = auth()->user();
+            $venda = Venda::where('id', $id)->lockForUpdate()->firstOrFail();
 
             if(!$venda) {
                 throw new \Exception('Venda não encontrada');
@@ -263,8 +339,13 @@ class VendaController extends Controller
                 throw new \Exception('Operação não pode ser concluida!');
             }   
 
-            if (empty($request->pin)) {
-                throw new \Exception('Somente um gerente pode aplicar desconto!');
+            // Validação do PIN do gerente
+            $encontrado = User::where('pin', $request->input('pin'))
+                ->whereNotNull('pin')
+                ->first();
+
+            if (!$encontrado || empty($request->input('pin'))) {
+                throw new \Exception('PIN inválido. Somente um gerente pode aplicar desconto!');
             }
 
             $percentualDesconto = $request->input('percentual_desconto');
@@ -276,9 +357,39 @@ class VendaController extends Controller
 
             DB::commit();
             
-            return redirect()->route('vendas.show', $id);
+            \Log::info('Desconto aplicado com sucesso:', [
+                'venda_id' => $id,
+                'percentual' => $percentualDesconto,
+                'valor_desconto' => $desconto,
+                'usuario_aplicacao' => auth()->id()
+            ]);
+
+            // Para requisições AJAX/Inertia, retorna JSON
+            if ($request->expectsJson() || $request->header('X-Inertia')) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Desconto de {$percentualDesconto}% aplicado com sucesso!"
+                ]);
+            }
+            
+            return redirect()->route('vendas.show', $id)
+                        ->with('success', "Desconto de {$percentualDesconto}% aplicado com sucesso!");
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            \Log::error('Erro ao aplicar desconto:', [
+                'venda_id' => $request->input('id'),
+                'error' => $e->getMessage()
+            ]);
+
+            // Para requisições AJAX/Inertia, retorna JSON de erro
+            if ($request->expectsJson() || $request->header('X-Inertia')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao aplicar desconto: ' . $e->getMessage()
+                ], 422);
+            }
+            
             return redirect()->back()
                         ->with('error', 'Erro ao aplicar desconto: ' . $e->getMessage());
         }
@@ -328,42 +439,113 @@ class VendaController extends Controller
     public function cancelarVenda(Request $request) {
         $request->validate([
             'pin' => 'required|string',
-            'id' => 'required|integer|exists:vendas,id'
+            'venda_id' => 'required|integer|exists:vendas,id'
         ]);
 
         try {
             DB::beginTransaction();
             
-            $id = $request->input('id');
-            $venda = Venda::findOrFail($id);
-            $usuario = auth()->user();
+            $id = $request->input('venda_id');
+            
+            // Use lockForUpdate para prevenir condições de corrida
+            $venda = Venda::where('id', $id)->lockForUpdate()->firstOrFail();
+            
+            // Log para debug
+            \Log::info('Tentativa de cancelamento de venda:', [
+                'venda_id' => $id,
+                'status_atual' => $venda->status,
+                'usuario_id' => auth()->id(),
+                'pin_fornecido' => !empty($request->input('pin'))
+            ]);
 
-            if(!$venda) {
-                throw new \Exception('Venda não encontrada');
-            }
-
-            if (empty($usuario->pin)) {
-                throw new \Exception('Operação só pode ser realizada por um gerente!');
-            }
-
+            // Verificação de status primeiro (antes da validação do PIN)
             if ($venda->status === 'cancelada') {
-                return redirect()->route('vendas.show', $id)
+                DB::rollBack();
+                if ($request->header('X-Inertia')) {
+                    return redirect()->back()
+                                ->with('error', 'Esta venda já está cancelada.');
+                }
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Esta venda já está cancelada.'
+                    ], 422);
+                }
+                return redirect()->back()
                             ->with('error', 'Esta venda já está cancelada.');
             }
 
             if ($venda->status === 'finalizada') {
+                DB::rollBack();
                 throw new \Exception('Vendas finalizadas não podem ser canceladas.');
             }
 
-            $venda->update([
+            // Validação do PIN apenas se a venda pode ser cancelada
+            $encontrado = User::where('pin', $request->input('pin'))
+                ->whereNotNull('pin')
+                ->first();
+
+            if (!$encontrado || empty($request->input('pin'))) {
+                DB::rollBack();
+                throw new \Exception('PIN inválido ou não encontrado.');
+            }
+
+            // Atualiza o status apenas se ainda estiver pendente
+            $resultado = $venda->update([
                 'status' => 'cancelada'
             ]);
 
-            DB::commit();
+            if (!$resultado) {
+                throw new \Exception('Falha ao atualizar o status da venda.');
+            }
 
-            return redirect()->route('vendas.show', $id);
+            DB::commit();
+            
+            \Log::info('Venda cancelada com sucesso:', [
+                'venda_id' => $id,
+                'usuario_cancelamento' => auth()->id()
+            ]);
+
+            // Para requisições Inertia, retorna redirect com mensagem de sucesso
+            if ($request->header('X-Inertia')) {
+                return redirect()->route('dashboard')
+                            ->with('success', 'Venda cancelada com sucesso.');
+            }
+
+            // Para requisições AJAX puras, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Venda cancelada com sucesso.'
+                ]);
+            }
+
+            return redirect()->route('vendas.show', $id)
+                        ->with('success', 'Venda cancelada com sucesso.');
+                        
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            \Log::error('Erro ao cancelar venda:', [
+                'venda_id' => $request->input('venda_id'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Para requisições Inertia, retorna redirect com erro
+            if ($request->header('X-Inertia')) {
+                return redirect()->back()
+                            ->with('error', 'Falha ao cancelar venda: ' . $e->getMessage());
+            }
+            
+            // Para requisições AJAX puras, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Falha ao cancelar venda: ' . $e->getMessage()
+                ], 422);
+            }
+            
             return redirect()->back()
                         ->with('error', 'Falha ao cancelar venda: ' . $e->getMessage());
         }
@@ -371,13 +553,15 @@ class VendaController extends Controller
 
     public function finalizarVenda(Request $request) {
         $request->validate([
-            'id' => 'required|integer|exists:vendas,id'
+            'id' => 'required|integer|exists:vendas,id',
+            'valor_pago' => 'required|numeric|min:0'
         ]);
 
         try{
             DB::beginTransaction();
             
             $id = $request->input('id');
+            $valorPago = $request->input('valor_pago');
             $venda = Venda::findOrFail($id);
 
             if(!$venda) {
@@ -385,32 +569,59 @@ class VendaController extends Controller
             }
 
             if ($venda->status === 'finalizada') {
-                return redirect()->route('vendas.show', $id)
+                DB::rollBack();
+                return redirect()->back()
                             ->with('error', 'Esta venda já está finalizada.');
             }
 
             if ($venda->status === 'cancelada') {
-                return redirect()->route('vendas.show', $id)
+                DB::rollBack();
+                return redirect()->back()
                             ->with('error', 'Vendas canceladas não podem ser finalizadas.');
+            }
+
+            if ($valorPago < $venda->valor_total) {
+                DB::rollBack();
+                
+                // Para requisições AJAX/Inertia, retorna JSON de erro
+                if ($request->expectsJson() || $request->header('X-Inertia')) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Valor pago é menor que o total da venda!'
+                    ], 422);
+                }
+                
+                return redirect()->back()
+                            ->with('error', 'Valor pago é menor que o total da venda!');
             }
 
             $venda->update(['status' => 'finalizada']);
 
             DB::commit();
-
-            if ($venda->forma_pagamento === 'dinheiro') {
-                $troco = $this->calculaTroco($request);
-
-                app('App\Http\Controllers\Ponk\CaixaController')->abrirGaveta();
-
-                return redirect()->route('vendas.show', $id)
-                            ->with('success', 'Venda finalizada com sucesso! Troco: ' . $troco['troco']);
-            }
             
-            imprimeCupom();
-            return redirect()->route('vendas.show', $id);
+            \Log::info('Venda finalizada com sucesso:', [
+                'venda_id' => $id,
+                'valor_total' => $venda->valor_total,
+                'valor_pago' => $valorPago,
+                'usuario_finalizacao' => auth()->id()
+            ]);
+
+            // Para requisições AJAX/Inertia, retorna redirect via Inertia
+            if ($request->expectsJson() || $request->header('X-Inertia')) {
+                return redirect()->route('pointOfSale');
+            }
+
+            return redirect()->route('pointOfSale')
+                        ->with('success', 'Venda finalizada com sucesso!');
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            \Log::error('Erro ao finalizar venda:', [
+                'venda_id' => $request->input('id'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()->back()
                         ->with('error', 'Erro ao finalizar venda: ' . $e->getMessage());
         }
@@ -568,6 +779,87 @@ class VendaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao validar PIN: ' . $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function atualizarFormaPagamento(Request $request) {
+        $request->validate([
+            'forma_pagamento' => 'required|string|in:dinheiro,cartao_credito,cartao_debito,pix',
+            'id' => 'required|integer|exists:vendas,id'
+        ], [
+            'forma_pagamento.required' => 'A forma de pagamento é obrigatória.',
+            'forma_pagamento.in' => 'Forma de pagamento inválida. Opções válidas: dinheiro, cartao_credito, cartao_debito, pix.'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            
+            $id = $request->input('id');
+            $venda = Venda::findOrFail($id);
+
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+
+            if($venda->status !== 'pendente') {
+                throw new \Exception('Operação não pode ser concluida!');
+            }   
+
+            $novaForma = $request->input('forma_pagamento');
+            $venda->update(['forma_pagamento' => $novaForma]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Forma de pagamento atualizada para ' . ucfirst($novaForma)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar forma de pagamento: ' . $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function atualizarCPFCliente($request) {
+        $request->validate([
+            'cpf_cliente' => 'nullable|string|size:11',
+            'id' => 'required|integer|exists:vendas,id'
+        ], [
+            'cpf_cliente.size' => 'O CPF deve ter exatamente 11 dígitos (apenas números).'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            
+            $id = $request->input('id');
+            $venda = Venda::findOrFail($id);
+
+            if(!$venda) {
+                throw new \Exception('Venda não encontrada');
+            }
+
+            if($venda->status !== 'pendente') {
+                throw new \Exception('Operação não pode ser concluida!');
+            }   
+
+            $cpfCliente = $request->input('cpf_cliente');
+            $venda->update(['cpf_cliente' => $cpfCliente]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'CPF do cliente atualizado com sucesso'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar CPF do cliente: ' . $e->getMessage()
             ], 422);
         }
     }

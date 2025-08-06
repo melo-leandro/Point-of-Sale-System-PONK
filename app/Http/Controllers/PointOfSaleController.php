@@ -52,6 +52,8 @@ class PointOfSaleController extends Controller
             'nova-quantidade' => app('App\Http\Controllers\Ponk\VendaController')->atualizaQuantidade($request),
             'novo-peso' => app('App\Http\Controllers\Ponk\VendaController')->atualizaPeso($request),
             'validar-gerente' => app('App\Http\Controllers\Ponk\VendaController')->validarPinGerente($request),
+            'nova-forma-pagamento' => app('App\Http\Controllers\Ponk\VendaController')->atualizarFormaPagamento($request),
+            'atualizar-cpf-cliente' => app('App\Http\Controllers\Ponk\VendaController')->atualizarCPFCliente($request),
             default => response()->json(['erro' => 'Ação não encontrada'], 404)
         };
     }
