@@ -22,8 +22,8 @@ export default function AuthenticatedLayout({ children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:ms-10 sm:flex sm:items-center">
-                                <h1 className="text-xl font-semibold leading-tight text-gray-800">
+                            <div className="hidden space-x-8 sm:flex sm:items-center">
+                                <h1 className="text-[36px] font-semibold leading-tight text-gray-800">
                                     Ponk
                                 </h1>
                                 <ResponsiveNavLink

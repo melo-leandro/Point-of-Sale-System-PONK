@@ -131,22 +131,22 @@ export default function StatusCaixa({
             <Head title="Status do Caixa" />
 
             <AuthenticatedLayout>
-                <div className="painel-wrapper">
+                <div className="status-container-principal">
                     <div
-                        className="painel-itens"
+                        className="status-painel-conteudo"
                         style={{ transform: `scale(${scale})` }}
                     >
-                        <div className="barra-lateral">
-                            <div className="cartao-escuro status">
-                                <div className="titulo-cartao">
+                        <div className="status-barra-lateral">
+                            <div className="status-cartao-escuro status">
+                                <div className="status-titulo-cartao">
                                     Status do Caixa
                                 </div>
 
-                                <div className="valor-status">
+                                <div className="status-valor-status">
                                     <h2>{aberto ? 'ABERTO' : 'FECHADO'}</h2>
                                 </div>
 
-                                <div className="subtitulo-status">
+                                <div className="status-subtitulo-status">
                                     <h2>
                                         {new Date(
                                             statusAlteradoData,
@@ -165,15 +165,15 @@ export default function StatusCaixa({
                                 </div>
                             </div>
 
-                            <div className="cartao-escuro terminal">
-                                <div className="titulo-cartao">Terminal</div>
+                            <div className="status-cartao-escuro terminal">
+                                <div className="status-titulo-cartao">Terminal</div>
 
-                                <div className="valor-cartao">
+                                <div className="status-valor-cartao">
                                     <h2>{caixa_numeracao}</h2>
                                 </div>
                             </div>
 
-                            <div className="cartao-atalhos">
+                            <div className="status-cartao-atalhos">
                                 <ul>
                                     <li>F1 – Voltar ao Menu</li>
 
@@ -190,9 +190,9 @@ export default function StatusCaixa({
 
                         {/* Coluna principal */}
 
-                        <div className="coluna-principal">
-                            <div className="mov-wrapper">
-                                <table className="mov">
+                        <div className="status-coluna-principal">
+                            <div className="status-mov-wrapper">
+                                <table className="status-mov">
                                     <thead>
                                         <tr>
                                             <th>Data e Hora</th>

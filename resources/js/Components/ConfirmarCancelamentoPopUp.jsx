@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../css/confirmarCancelamentoPopUp.css';
 
 const ConfirmarCancelamentoPopUp = ({ 
@@ -10,6 +10,24 @@ const ConfirmarCancelamentoPopUp = ({
     textoBotaoConfirmar = "Sim, cancelar",
     textoBotaoCancelar = "Não, voltar"
 }) => {
+    // Adiciona listener para Enter e Esc
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                aoConfirmar();
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                aoFechar();
+            }
+        };
+
+        if (aparecendo) {
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown);
+        }
+    }, [aparecendo, aoConfirmar, aoFechar]);
+
     if (!aparecendo) return null;
 
     const handleOverlayClick = (e) => {

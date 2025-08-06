@@ -6,6 +6,7 @@
 
 /* Nome do item */
 .cabecalho-ponto-venda {
+  height: 72px;
   font-size: 32px;
   font-weight: bold;
   text-align: center;
@@ -44,7 +45,13 @@
 /* Alturas específicas */
 .cartao-escuro.codigo-desconto { height: 128px; }
 .cartao-escuro.valor-unitario,
-.cartao-escuro.total-item { height: 112px; }
+.cartao-escuro.valor-descontado,
+.cartao-escuro.total-item,
+.cartao-escuro.forma-pagamento { height: 112px; }
+
+.cartao-escuro.forma-pagamento,
+.cartao-escuro.desconto-input,
+.cartao-escuro.valor-descontado { background-color: #006400; }
 
 /* Header interno de cada card */
 .cartao-escuro > .titulo-cartao {
@@ -56,7 +63,9 @@
 }
 .cartao-escuro.codigo-desconto > .titulo-cartao { padding: 10px 0 9px 28px; }
 .cartao-escuro.valor-unitario > .titulo-cartao,
-.cartao-escuro.total-item > .titulo-cartao { padding: 10px 0 4px 28px; }
+.cartao-escuro.valor-descontado > .titulo-cartao,
+.cartao-escuro.total-item > .titulo-cartao,
+.cartao-escuro.forma-pagamento > .titulo-cartao { padding: 10px 0 4px 28px; }
 
 /* Input de codigo-desconto */
 .cartao-escuro.codigo-desconto .cartao-input-wrapper {
@@ -77,8 +86,32 @@
   padding: 0 12px;
 }
 
+/* Input de desconto */
+.cartao-escuro.desconto-input { 
+  height: 128px;
+}
+.cartao-escuro.desconto-input > .titulo-cartao { padding: 10px 0 9px 28px; }
+.cartao-escuro.desconto-input .cartao-input-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+}
+.cartao-escuro.desconto-input .cartao-input-wrapper input {
+  width: 325px;
+  height: 48px;
+  border-radius: 18px;
+  border: 1px solid #ccc;
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  background: white;
+  padding: 0 12px;
+}
+
 /* Valor unitário e total do item */
 .cartao-escuro.valor-unitario .valor-cartao,
+.cartao-escuro.valor-descontado .valor-cartao,
 .cartao-escuro.total-item .valor-cartao {
   display: flex;
   justify-content: flex-end;
@@ -89,6 +122,7 @@
   margin-top: -16px;
 }
 .cartao-escuro.valor-unitario .valor-cartao h2,
+.cartao-escuro.valor-descontado .valor-cartao h2,
 .cartao-escuro.total-item .valor-cartao h2 {
   font-size: 50px;
   font-weight: 600;
@@ -97,27 +131,35 @@
 
 /* Lista de atalhos (F1, F2...) */
 .cartao-atalhos {
-  display: flex;
+  display: flex;  
   height: 128px;
   background: #003254;
-  flex-direction: column;
+  flex-direction: row;
   border-radius: 18px;
+  align-items: center;
   justify-content: center;
-  padding: 8px;
+  gap: 8px;
 }
 .cartao-atalhos ul {
   margin: 0;
-  padding: 0 0 0 16px;
   list-style: none;
 }
 .cartao-atalhos ul li {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   color: white;
   margin-bottom: 2px;
 }
 .cartao-atalhos ul li:last-child {
   margin-bottom: 0;
+}
+
+/* Linha divisória dos atalhos */
+.atalhos-divider {
+  border: none;
+  width: 1px;
+  height: 80px;
+  background-color: #ffffff;
 }
 
 /* Coluna principal */
@@ -275,4 +317,83 @@
   font-size: 96px;
   font-weight: 600;
   color: white;
+}
+
+/* Wrapper para os dois cartões de total e troco */
+.total-troco-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+    height: 128px;
+}
+
+/* Ajuste de altura para os cartões no wrapper */
+.total-troco-wrapper .cartao-total {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 120px;
+    flex: 1;
+}
+
+.total-troco-wrapper div .rotulo {
+    font-size: 32px;
+    font-weight: 600;
+    color: white;
+    padding: 10px 0 0 24px;
+}
+
+.total-troco-wrapper div .valor h2{
+    font-size: 64px;
+    font-weight: 600;
+    color: white;
+    margin-top: -28px;
+}
+
+/* Dropdown de forma de pagamento */
+.dropdown-wrapper {
+    display: flex;
+    align-items: center;
+    height: 112px;
+    justify-content: center;
+    margin-top: -16px;
+}
+
+.forma-pagamento-select {
+    text-align: center;
+    height: 50px;
+    background-color: #006400;
+    color: white;
+    border: 2px solid #006400;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 28px;
+    font-weight: 600;
+    width: 100%;
+    max-width: 375px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    /* Remove a seta padrão */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Adiciona seta customizada */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 35px;
+}
+
+.forma-pagamento-select:focus {
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+}
+
+.forma-pagamento-select option {
+    background-color: #ffffff;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
 }

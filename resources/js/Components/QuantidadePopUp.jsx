@@ -116,6 +116,21 @@ export default function QuantidadePopUp({
     );  
     }
     else {
+        // useEffect para adicionar listener de teclado no caso de erro
+        useEffect(() => {
+            const handleErrorKeyDown = (event) => {
+                if (event.key === 'Escape' || event.key === 'Enter') {
+                    event.preventDefault();
+                    quandoCancelar();
+                }
+            };
+
+            if (aparecendo) {
+                document.addEventListener('keydown', handleErrorKeyDown);
+                return () => document.removeEventListener('keydown', handleErrorKeyDown);
+            }
+        }, [aparecendo]);
+
         return (
         <div className="quantidade-popup-overlay">
             <div className="quantidade-popup-container">
@@ -129,7 +144,7 @@ export default function QuantidadePopUp({
                     onClick={quandoCancelar}
                     className="quantidade-popup-botao quantidade-popup-botao-cancelar"
                 >
-                    Fechar
+                    Fechar (ESC/ENTER)
                 </button>
             </div>
         </div>

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import '../../css/PinGerentePopUp.css';
 import { normalizeModuleId } from 'vite/module-runner';
 
-export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, titulo = "Insira o PIN do gerente:" }) {
+export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, titulo = "Insira o PIN do gerente:", objetivo }) {
     const [pin, setPin] = useState('');
     const inputRef = useRef(null);
 
@@ -17,7 +17,7 @@ export default function PinGerentePopUp({ aparecendo, aoConfirmar, aoFechar, tit
     }, [aparecendo]);
 
     const handleConfirm = () => {
-            aoConfirmar(pin);
+            aoConfirmar(pin, objetivo);
             setPin('');
     };
 
