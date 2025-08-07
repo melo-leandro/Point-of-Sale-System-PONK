@@ -7,11 +7,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import '../../css/PointOfSale.css';
-import CodigoOrDesconto from '@/Components/CodigoOrDesconto';
-import QuantidadePopUp from '@/Components/QuantidadePopUp';
-import PinGerentePopUp from '@/Components/PinGerentePopUp';
-import RemoverItemPopUp from '@/Components/RemoverItemPopUp';
-import ConfirmarCancelamentoPopUp from '@/Components/ConfirmarCancelamentoPopUp';
 import ValorDisplay from '@/Components/ValorDisplay';
 import TotalItemDisplay from '@/Components/TotalItemDisplay';
 import Atalhos from '@/Components/Atalhos';
@@ -349,6 +344,25 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
     
     useEffect(() => {
         const handleKeyDown = (event) => {
+            // Permite Enter apenas em contextos específicos (modais abertos)
+            if (event.key === 'Enter') {
+                // Se algum modal estiver aberto, permite que o Enter funcione
+                const modalAberto = showQuantidadePopUp || 
+                                  showPinGerentePopUp || 
+                                  showRemoverItemPopUp || 
+                                  showConfirmarCancelamentoPopUp || 
+                                  showInserirCPF || 
+                                  showInserirValor || 
+                                  showFinalizarVenda;
+                
+                if (!modalAberto) {
+                    event.preventDefault();
+                    return; // Bloqueia Enter apenas quando nenhum modal está aberto
+                }
+                // Se modal estiver aberto, deixa o comportamento padrão do Enter funcionar
+                return;
+            }
+
             if (screenState === 'inputProdutos') {
                 switch (event.key) {
                     case 'F2':
@@ -380,8 +394,12 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
                     case 'F4':
                         event.preventDefault();
                         // Validar se há itens na venda
-                        if (valorTotal <= 0 || itens.length === 0) {
+                        if (itens.length === 0) {
                             alert('Não há itens na venda para finalizar.');
+                            return;
+                        }
+                        if (valorTotal <= 0) {
+                            alert('O valor total da venda deve ser maior que zero.');
                             return;
                         }
                         // Validar se o valor recebido foi informado (exceto para cartão)
@@ -430,7 +448,9 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown); // limpeza
-    }, [screenState, itens, valorTotal, valorRecebido, formaPagamento]);    
+    }, [screenState, itens, valorTotal, valorRecebido, formaPagamento, 
+        showQuantidadePopUp, showPinGerentePopUp, showRemoverItemPopUp, 
+        showConfirmarCancelamentoPopUp, showInserirCPF, showInserirValor, showFinalizarVenda]);    
     
     if (loadingVenda) {
         return (
@@ -765,8 +785,14 @@ export default function PointOfSale({ user, caixa_id, caixa_status, vendas }) {
             setValorRecebido(valorTotal);
         }
 
-        if (valorTotal <= 0) {
+        if (itens.length === 0) {
             alert('Não há itens na venda para finalizar.');
+            setShowFinalizarVenda(false);
+            return;
+        }
+
+        if (valorTotal <= 0) {
+            alert('O valor total da venda deve ser maior que zero.');
             setShowFinalizarVenda(false);
             return;
         }
