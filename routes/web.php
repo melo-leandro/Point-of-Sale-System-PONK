@@ -5,6 +5,7 @@ use App\Http\Controllers\Ponk\CaixaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PointOfSaleController;
 use App\Http\Controllers\StatusCaixaController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +21,9 @@ Route::get('/', function () {
     return Redirect::route('login');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('/pointOfSale', [PointOfSaleController::class, 'index'])
     ->middleware(['auth', 'verified'])
