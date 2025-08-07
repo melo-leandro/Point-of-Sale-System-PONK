@@ -123,6 +123,12 @@ body {
     letter-spacing: 1px;
 }
 
+#admin{
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-bottom: 0px;
+}
+
 .menu-icon {
     font-size: 80px;
     margin-bottom: 30px;

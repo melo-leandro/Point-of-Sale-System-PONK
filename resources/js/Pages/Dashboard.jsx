@@ -74,10 +74,11 @@ export default function Dashboard() {
                 {user?.admin && (
                     <div 
                         className="menu-card"
+                        id="admin-register"
                         onClick={() => handleMenuClick('register')}
                     >
                         <div className="menu-card-content">
-                            <div className="menu-title">CADASTRAR USUÁRIO</div>
+                            <div id="admin" className="menu-title">CADASTRAR USUÁRIO</div>
                             <div className="menu-icon">👤</div>
                         </div>
                         <div className="menu-key">F3</div>
