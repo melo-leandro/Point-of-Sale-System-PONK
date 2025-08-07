@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Validation\ValidationException;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'pin'
+        'pin',
+        'admin'
     ];
 
     protected $hidden = [
@@ -30,6 +32,7 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'pin' => 'encrypted',
+            'admin' => 'boolean',
         ];
     }
     

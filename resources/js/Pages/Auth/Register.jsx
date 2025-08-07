@@ -8,10 +8,35 @@ import { Head, Link, useForm } from '@inertiajs/react';
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
+        cpf: '',
         email: '',
         password: '',
         password_confirmation: '',
+        admin: false,
     });
+
+    const formatCPF = (value) => {
+        // Remove todos os caracteres não numéricos
+        const cleanValue = value.replace(/\D/g, '');
+        
+        // Aplica a formatação
+        if (cleanValue.length <= 11) {
+            return cleanValue
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        
+        return cleanValue.slice(0, 11)
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    };
+
+    const handleCPFChange = (e) => {
+        const formattedCPF = formatCPF(e.target.value);
+        setData('cpf', formattedCPF);
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -41,6 +66,24 @@ export default function Register() {
                     />
 
                     <InputError message={errors.name} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="cpf" value="CPF" />
+
+                    <TextInput
+                        id="cpf"
+                        name="cpf"
+                        value={data.cpf}
+                        className="mt-1 block w-full"
+                        autoComplete="cpf"
+                        onChange={handleCPFChange}
+                        placeholder="000.000.000-00"
+                        maxLength={14}
+                        required
+                    />
+
+                    <InputError message={errors.cpf} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
@@ -100,6 +143,22 @@ export default function Register() {
                         message={errors.password_confirmation}
                         className="mt-2"
                     />
+                </div>
+
+                <div className="mt-4">
+                    <label className="flex items-center">
+                        <input
+                            type="checkbox"
+                            name="admin"
+                            checked={data.admin}
+                            onChange={(e) => setData('admin', e.target.checked)}
+                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        />
+                        <span className="ml-2 text-sm text-gray-600">
+                            Tornar este usuário administrador
+                        </span>
+                    </label>
+                    <InputError message={errors.admin} className="mt-2" />
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">
